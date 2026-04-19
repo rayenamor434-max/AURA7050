@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sciences Physiques — 1ère S</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --surface: #0f1520;
+  --surface2: #141d2e;
+  --surface3: #1a2540;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
+  --blue: #3b82f6;
+  --blue-glow: rgba(59,130,246,0.2);
+  --cyan: #22d3ee;
+  --green: #34d399;
+  --pink: #f472b6;
+  --orange: #fb923c;
+  --yellow: #fbbf24;
+  --red: #f87171;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --radius: 14px;
+  --sidebar: 260px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Sora',sans-serif;font-size:14px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 20% 0%,rgba(59,130,246,0.06) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 60% at 80% 100%,rgba(34,211,238,0.04) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+ 
+/* ===== LOGIN ===== */
+#login{
+  position:fixed;inset:0;z-index:100;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+}
+.login-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:24px;padding:3rem;text-align:center;
+  max-width:440px;width:90%;
+  box-shadow:0 0 80px rgba(59,130,246,0.08);
+  animation:slideUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+}
+.login-logo{font-size:3rem;margin-bottom:0.5rem;}
+.login-title{
+  font-family:'Sora',sans-serif;font-weight:800;
+  font-size:1.8rem;
+  background:linear-gradient(135deg,#e2e8f0,#3b82f6,#22d3ee);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:0.4rem;
+}
+.login-sub{color:var(--text2);font-size:0.9rem;margin-bottom:2rem;}
+.login-input{
+  width:100%;background:var(--surface2);border:1.5px solid var(--border2);
+  color:var(--text);font-family:'Cairo',sans-serif;font-size:1rem;
+  padding:0.9rem 1.2rem;border-radius:12px;outline:none;text-align:center;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  margin-bottom:1rem;
+}
+.login-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-glow);}
+.login-btn{
+  width:100%;background:linear-gradient(135deg,#3b82f6,#06b6d4);
+  border:none;color:#fff;font-family:'Sora',sans-serif;font-weight:700;
+  font-size:1rem;padding:0.9rem;border-radius:12px;cursor:pointer;
+  transition:opacity 0.2s,transform 0.2s;letter-spacing:0.03em;
+}
+.login-btn:hover{opacity:0.9;transform:translateY(-1px);}
+ 
+/* ===== APP LAYOUT ===== */
+#app{display:none;height:100vh;flex-direction:column;position:relative;z-index:1;}
+.app-header{
+  background:rgba(8,12,20,0.9);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:1rem;padding:0 1.5rem;
+  height:56px;flex-shrink:0;z-index:10;
+}
+.header-logo{font-weight:800;font-size:1rem;color:var(--blue);}
+.header-name{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:999px;padding:0.3rem 1rem;font-size:0.8rem;color:var(--text2);
+  font-family:'Cairo',sans-serif;
+}
+.header-tabs{display:flex;gap:4px;margin-right:auto;margin-left:1rem;}
+.tab{
+  padding:0.4rem 1.2rem;border-radius:8px;font-weight:600;font-size:0.85rem;
+  cursor:pointer;color:var(--text2);border:none;background:transparent;
+  transition:all 0.2s;font-family:'Sora',sans-serif;
+}
+.tab.active{background:var(--surface2);color:var(--text);border:1px solid var(--border2);}
+.tab:hover:not(.active){color:var(--text);background:rgba(255,255,255,0.04);}
+ 
+.app-body{display:flex;flex:1;overflow:hidden;}
+ 
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--surface);border-right:1px solid var(--border);
+  overflow-y:auto;padding:1rem 0.75rem;
+}
+.sidebar::-webkit-scrollbar{width:4px;}
+.sidebar::-webkit-scrollbar-track{background:transparent;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+.sidebar-section{
+  font-size:0.7rem;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.1em;
+  padding:0 0.5rem;margin:1rem 0 0.5rem;
+}
+.sidebar-item{
+  display:flex;align-items:center;gap:0.7rem;
+  padding:0.6rem 0.75rem;border-radius:10px;cursor:pointer;
+  color:var(--text2);transition:all 0.15s;font-size:0.85rem;font-weight:500;
+  border:1px solid transparent;margin-bottom:2px;
+}
+.sidebar-item:hover{background:var(--surface2);color:var(--text);}
+.sidebar-item.active{
+  background:rgba(59,130,246,0.1);color:var(--blue);
+  border-color:rgba(59,130,246,0.2);
+}
+.sidebar-item .icon{font-size:1rem;flex-shrink:0;}
+.sidebar-badge{
+  margin-left:auto;background:var(--surface3);
+  color:var(--text3);font-size:0.7rem;font-weight:700;
+  padding:2px 7px;border-radius:999px;
+}
+.sidebar-badge.pts{background:rgba(34,211,238,0.1);color:var(--cyan);}
+ 
+/* ===== CONTENT ===== */
+.content{flex:1;overflow-y:auto;padding:1.5rem;background:var(--bg);}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-track{background:transparent;}
+.content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+ 
+/* ===== WELCOME / EMPTY ===== */
+.welcome{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;height:100%;text-align:center;
+  animation:fadeUp 0.4s ease;
+}
+.welcome-emoji{font-size:3rem;margin-bottom:1rem;}
+.welcome-title{
+  font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;
+  margin-bottom:0.5rem;
+}
+.welcome-sub{color:var(--text2);font-size:0.9rem;}
+ 
+/* ===== COURSE VIEW ===== */
+.course-header{
+  display:flex;align-items:center;gap:1rem;
+  margin-bottom:1.5rem;padding-bottom:1rem;
+  border-bottom:1px solid var(--border);
+}
+.course-icon{
+  font-size:2rem;width:56px;height:56px;
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.course-title{font-size:1.4rem;font-weight:800;margin-bottom:0.2rem;}
+.course-subtitle-ar{
+  font-family:'Cairo',sans-serif;color:var(--text2);font-size:0.95rem;
+  direction:rtl;
+}
+ 
+.lang-toggle{
+  display:flex;gap:4px;margin-bottom:1.5rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:4px;width:fit-content;
+}
+.lang-btn{
+  padding:0.35rem 1rem;border-radius:7px;font-size:0.8rem;font-weight:600;
+  cursor:pointer;border:none;background:transparent;color:var(--text2);
+  transition:all 0.15s;
+}
+.lang-btn.active{background:var(--surface2);color:var(--text);}
+ 
+.course-section{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;
+  transition:border-color 0.2s;
+}
+.course-section:hover{border-color:var(--border2);}
+.section-head{
+  display:flex;align-items:center;gap:0.7rem;cursor:pointer;
+  user-select:none;
+}
+.section-head .dot{
+  width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;
+}
+.section-title{font-weight:700;font-size:0.95rem;flex:1;}
+.section-arrow{color:var(--text3);transition:transform 0.2s;font-size:0.8rem;}
+.section-arrow.open{transform:rotate(90deg);}
+.section-body{
+  margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);
+  display:none;
+}
+.section-body.open{display:block;}
+ 
+.fr-content{line-height:1.8;color:var(--text);}
+.ar-content{
+  direction:rtl;text-align:right;font-family:'Cairo',sans-serif;
+  line-height:2.1;color:var(--text);display:none;
+  font-size:0.95rem;
+}
+.ar-content.show{display:block;}
+.fr-content.hide{display:none;}
+ 
+.formula-box{
+  background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(34,211,238,0.06));
+  border:1px solid rgba(59,130,246,0.2);border-radius:10px;
+  padding:1rem 1.25rem;margin:0.75rem 0;
+  font-family:'Sora',sans-serif;font-weight:700;
+  font-size:1.2rem;color:var(--cyan);text-align:center;
+}
+.note-box{
+  background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);
+  border-radius:10px;padding:0.8rem 1rem;margin:0.75rem 0;
+  font-size:0.88rem;
+}
+.note-box::before{content:'💡 ';font-size:1rem;}
+.table-mini{width:100%;border-collapse:collapse;margin:0.75rem 0;font-size:0.85rem;}
+.table-mini th{
+  background:rgba(255,255,255,0.05);padding:0.5rem 0.75rem;
+  text-align:left;font-weight:700;color:var(--cyan);
+  border-bottom:1px solid var(--border2);
+}
+.table-mini td{
+  padding:0.45rem 0.75rem;border-bottom:1px solid var(--border);
+  color:var(--text);
+}
+.table-mini tr:last-child td{border-bottom:none;}
+strong.hl{color:var(--green);}
+strong.hlb{color:var(--blue);}
+strong.hlp{color:var(--pink);}
+ 
+/* ===== DEVOIR VIEW ===== */
+.devoir-header{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius);padding:1.25rem;margin-bottom:1.5rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.devoir-meta h2{font-size:1.1rem;font-weight:800;margin-bottom:0.3rem;}
+.devoir-meta p{color:var(--text2);font-size:0.85rem;}
+.devoir-total{
+  background:rgba(34,211,238,0.1);border:1px solid rgba(34,211,238,0.25);
+  border-radius:12px;padding:0.75rem 1.25rem;text-align:center;
+}
+.devoir-total .pts{font-size:1.5rem;font-weight:800;color:var(--cyan);}
+.devoir-total .lbl{font-size:0.75rem;color:var(--text2);}
+ 
+.exercise-block{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;
+}
+.ex-title-bar{
+  display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;
+  padding-bottom:0.75rem;border-bottom:1px solid var(--border);
+}
+.ex-subject{
+  font-size:0.7rem;font-weight:800;letter-spacing:0.08em;
+  text-transform:uppercase;padding:3px 10px;border-radius:6px;
+}
+.ex-subject.chimie{background:rgba(52,211,153,0.12);color:var(--green);}
+.ex-subject.physique{background:rgba(59,130,246,0.12);color:var(--blue);}
+.ex-title{font-weight:700;font-size:0.95rem;flex:1;}
+.ex-pts{
+  background:var(--surface3);color:var(--text2);
+  font-size:0.8rem;font-weight:700;padding:3px 10px;
+  border-radius:999px;white-space:nowrap;
+}
+.context-box{
+  background:var(--surface2);border-left:3px solid var(--blue);
+  border-radius:0 8px 8px 0;padding:0.75rem 1rem;
+  margin-bottom:1rem;font-size:0.88rem;line-height:1.7;color:var(--text2);
+}
+.question-block{margin-bottom:0.9rem;}
+.q-label{
+  font-weight:600;font-size:0.88rem;color:var(--text);
+  margin-bottom:0.4rem;line-height:1.6;display:flex;gap:0.5rem;
+}
+.q-pts{
+  background:rgba(251,191,36,0.1);color:var(--yellow);
+  font-size:0.72rem;padding:1px 7px;border-radius:5px;
+  font-weight:700;flex-shrink:0;margin-top:2px;height:fit-content;
+}
+.answer-input{
+  width:100%;background:var(--surface2);border:1.5px solid var(--border);
+  color:var(--text);font-family:'Cairo',sans-serif;font-size:0.9rem;
+  padding:0.65rem 0.9rem;border-radius:9px;outline:none;
+  transition:border-color 0.2s;resize:vertical;min-height:60px;
+  line-height:1.6;
+}
+.answer-input:focus{border-color:var(--blue);}
+.answer-input::placeholder{color:var(--text3);}
+ 
+.correction-bar{
+  display:flex;align-items:center;gap:1rem;
+  margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.btn-correct{
+  background:linear-gradient(135deg,#3b82f6,#06b6d4);
+  border:none;color:#fff;font-family:'Sora',sans-serif;font-weight:700;
+  font-size:0.9rem;padding:0.7rem 1.5rem;border-radius:10px;
+  cursor:pointer;transition:opacity 0.2s,transform 0.2s;
+}
+.btn-correct:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-correct:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.grade-badge{
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:0.5rem 1rem;font-weight:700;
+  display:none;
+}
+.grade-badge.show{display:flex;align-items:center;gap:0.5rem;}
+.grade-num{font-size:1.2rem;}
+.grade-num.good{color:var(--green);}
+.grade-num.mid{color:var(--yellow);}
+.grade-num.low{color:var(--red);}
+ 
+.correction-panel{
+  margin-top:1rem;border-radius:var(--radius);overflow:hidden;display:none;
+}
+.correction-panel.show{display:block;}
+.correction-header{
+  background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(34,211,238,0.08));
+  border:1px solid rgba(59,130,246,0.2);border-bottom:none;
+  padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.6rem;
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+.correction-header span{font-weight:700;color:var(--cyan);}
+.correction-body{
+  background:var(--surface);border:1px solid rgba(59,130,246,0.15);
+  border-radius:0 0 var(--radius) var(--radius);padding:1.25rem;
+}
+.q-correction{
+  margin-bottom:0.9rem;padding:0.9rem;border-radius:9px;
+  border:1px solid var(--border);
+}
+.q-correction.correct{border-color:rgba(52,211,153,0.25);background:rgba(52,211,153,0.04);}
+.q-correction.wrong{border-color:rgba(248,113,113,0.25);background:rgba(248,113,113,0.04);}
+.q-correction.partial{border-color:rgba(251,191,36,0.25);background:rgba(251,191,36,0.04);}
+.q-corr-title{
+  font-weight:700;font-size:0.85rem;display:flex;align-items:center;
+  gap:0.5rem;margin-bottom:0.5rem;
+}
+.q-corr-fr{font-size:0.85rem;line-height:1.6;margin-bottom:0.3rem;color:var(--text);}
+.q-corr-ar{
+  font-family:'Cairo',sans-serif;font-size:0.88rem;direction:rtl;
+  text-align:right;line-height:1.9;color:var(--text2);
+  border-top:1px solid var(--border);margin-top:0.4rem;padding-top:0.4rem;
+}
+.loading-dots{display:inline-flex;gap:4px;align-items:center;}
+.loading-dots span{
+  width:6px;height:6px;border-radius:50%;background:var(--cyan);
+  animation:bounce 1.2s infinite;
+}
+.loading-dots span:nth-child(2){animation-delay:0.2s;}
+.loading-dots span:nth-child(3){animation-delay:0.4s;}
+ 
+/* ===== WATERMARK ===== */
+.watermark{
+  position:fixed;bottom:12px;right:16px;z-index:5;
+  font-size:0.7rem;color:rgba(255,255,255,0.07);
+  font-family:'Sora',sans-serif;letter-spacing:0.1em;
+  pointer-events:none;user-select:none;
+}
+ 
+/* ===== ANIMATIONS ===== */
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes bounce{0%,80%,100%{transform:scale(0.8);}40%{transform:scale(1.2);}}
+ 
+/* Scrollbar global */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+</style>
+</head>
+<body>
+ 
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-logo">🧪</div>
+    <div class="login-title">Sciences Physiques</div>
+    <div class="login-sub" style="font-family:'Cairo',sans-serif;">1ère S — المرحلة الأولى ثانوي</div>
+    <input class="login-input" id="name-input" type="text" placeholder="أدخل اسمك / Entrez votre prénom" autocomplete="off" />
+    <button class="login-btn" onclick="startApp()">ابدأ الدراسة — Commencer ▶</button>
+  </div>
+</div>
+ 
+<!-- APP -->
+<div id="app">
+  <div class="app-header">
+    <div class="header-logo">⚗️ PhySci 1S</div>
+    <div class="header-tabs">
+      <button class="tab active" id="tab-cours" onclick="switchSection('cours')">📚 Cours</button>
+      <button class="tab" id="tab-devoirs" onclick="switchSection('devoirs')">📝 Devoirs</button>
+    </div>
+    <div class="header-name" id="header-name"></div>
+  </div>
+  <div class="app-body">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="content" id="content">
+      <div class="welcome">
+        <div class="welcome-emoji">👋</div>
+        <div class="welcome-title">Sélectionne un chapitre</div>
+        <div class="welcome-sub" style="font-family:'Cairo',sans-serif;">اختر فصلاً من القائمة الجانبية</div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<div class="watermark">Rayen ✦</div>
+ 
+<script>
+// ─────────────────────────────────────────
+//  DATA: COURSES
+// ─────────────────────────────────────────
+const COURSES = [
+  {
+    id:'circuit', icon:'⚡', title:'Circuit Électrique', titleAr:'الدائرة الكهربائية',
+    sections:[
+      {
+        title:'Les conducteurs et les isolants',titleAr:'الموصلات والعوازل الكهربائية',
+        fr:`Un <strong class="hl">conducteur électrique</strong> est toute matière qui laisse passer le courant électrique.<br>
+<strong>Exemples :</strong> le cuivre (Cu), le fer (Fe), le graphite, l'aluminium.<br><br>
+Un <strong class="hlp">isolant électrique</strong> est toute matière qui ne laisse <em>pas</em> passer le courant électrique.<br>
+<strong>Exemples :</strong> le verre, le bois, le plastique, l'air, la porcelaine.`,
+        ar:`<strong>الموصل الكهربائي</strong> هو كل مادة تسمح بمرور التيار الكهربائي.<br>
+<strong>أمثلة:</strong> النحاس، الحديد، الغرافيت، الألومنيوم.<br><br>
+<strong>العازل الكهربائي</strong> هو كل مادة لا تسمح بمرور التيار الكهربائي.<br>
+<strong>أمثلة:</strong> الزجاج، الخشب، البلاستيك، الهواء، الخزف.`
+      },
+      {
+        title:'Les effets du courant électrique',titleAr:'تأثيرات التيار الكهربائي',
+        fr:`<table class="table-mini"><thead><tr><th>Effet</th><th>Dispositif</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td>🔥 <strong>Thermique</strong></td><td>Lampe, radiateur</td><td>Le courant chauffe le filament qui émet de la lumière</td></tr>
+<tr><td>⚗️ <strong>Chimique</strong></td><td>Électrolyseur</td><td>Le courant transforme l'eau salée en eau de javel</td></tr>
+<tr><td>🧲 <strong>Magnétique</strong></td><td>Aiguille aimantée</td><td>Le courant crée un champ magnétique qui dévie l'aiguille</td></tr>
+<tr><td>💡 <strong>Lumineux</strong></td><td>DEL (LED)</td><td>La diode émet de la lumière sans chauffer</td></tr>
+</tbody></table>`,
+        ar:`<table class="table-mini"><thead><tr><th>التأثير</th><th>الجهاز</th><th>الوصف</th></tr></thead>
+<tbody>
+<tr><td>🔥 <strong>الحراري</strong></td><td>المصباح، المدفأة</td><td>يُسخّن التيار خيط المصباح فيُصدر ضوءاً</td></tr>
+<tr><td>⚗️ <strong>الكيميائي</strong></td><td>المحلّل الكهربائي</td><td>يُحوّل التيار الماء المالح إلى ماء جافيل</td></tr>
+<tr><td>🧲 <strong>المغناطيسي</strong></td><td>الإبرة المغناطيسية</td><td>يُنشئ التيار مجالاً مغناطيسياً يُنحرف به الإبرة</td></tr>
+<tr><td>💡 <strong>الضوئي</strong></td><td>الصمام LED</td><td>الصمام يُصدر ضوءاً دون توليد حرارة</td></tr>
+</tbody></table>`
+      },
+      {
+        title:'Court-circuit',titleAr:'الدارة القصيرة',
+        fr:`Un <strong class="hlp">court-circuit</strong> se produit lorsqu'on relie les deux bornes d'un dipôle par un fil conducteur.<br><br>
+<strong>Conséquences :</strong><br>
+• Le dipôle court-circuité <strong>s'éteint</strong> (le courant ne le traverse plus).<br>
+• L'autre dipôle reçoit plus de courant → il <strong>risque d'être endommagé</strong>.
+<div class="note-box">Le courant choisit toujours le chemin de moindre résistance (le fil conducteur).</div>`,
+        ar:`تحدث <strong>الدارة القصيرة</strong> عندما يُوصَل طرفا ثنائي القطب بسلك موصل مباشرةً.<br><br>
+<strong>النتائج:</strong><br>
+• الثنائي المُقصَّر <strong>يتوقف عن العمل</strong> (لأن التيار لا يمر به).<br>
+• الثنائي الآخر يتلقى تياراً مرتفعاً → <strong>يخاطر بالاحتراق</strong>.
+<div class="note-box" style="text-align:right">التيار يختار دائماً المسار الأقل مقاومةً (السلك الموصل).</div>`
+      }
+    ]
+  },
+  {
+    id:'poids', icon:'⚖️', title:'Poids et Masse', titleAr:'الوزن والكتلة',
+    sections:[
+      {
+        title:'Distinction entre masse et poids',titleAr:'الفرق بين الكتلة والوزن',
+        fr:`<table class="table-mini"><thead><tr><th>Grandeur</th><th>Masse <em>m</em></th><th>Poids <em>P</em></th></tr></thead>
+<tbody>
+<tr><td>Définition</td><td>Quantité de matière</td><td>Force d'attraction de la Terre</td></tr>
+<tr><td>Unité</td><td>kilogramme (kg)</td><td>Newton (N)</td></tr>
+<tr><td>Varie?</td><td>❌ Constante partout</td><td>✅ Varie selon le lieu</td></tr>
+<tr><td>Mesure</td><td>Balance (masse)</td><td>Dynamomètre</td></tr>
+</tbody></table>`,
+        ar:`<table class="table-mini"><thead><tr><th>الكمية</th><th>الكتلة <em>m</em></th><th>الوزن <em>P</em></th></tr></thead>
+<tbody>
+<tr><td>التعريف</td><td>كمية المادة</td><td>قوة جذب الأرض</td></tr>
+<tr><td>الوحدة</td><td>الكيلوغرام (kg)</td><td>النيوتن (N)</td></tr>
+<tr><td>تتغير؟</td><td>❌ ثابتة في كل مكان</td><td>✅ تتغير حسب المكان</td></tr>
+<tr><td>القياس</td><td>ميزان</td><td>ديناموميتر</td></tr>
+</tbody></table>`
+      },
+      {
+        title:'Relation P = m · g',titleAr:'العلاقة P = m × g',
+        fr:`En effectuant des mesures avec un dynamomètre, on constate que le rapport <strong>P/m est constant</strong>. Ce rapport est appelé <strong>intensité de la pesanteur g</strong>.<br><br>
+<div class="formula-box">P = m × g</div>
+<ul style="margin:0.5rem 0 0.5rem 1.2rem;line-height:2;">
+<li><strong>P</strong> : poids en Newton (N)</li>
+<li><strong>m</strong> : masse en kilogramme (kg)</li>
+<li><strong>g</strong> : intensité de pesanteur en N·kg⁻¹</li>
+</ul>
+<div class="note-box">À Tunis : g = 9,8 N·kg⁻¹. En calcul simplifié : g ≈ 10 N·kg⁻¹</div>`,
+        ar:`بإجراء قياسات بالديناموميتر، نلاحظ أن النسبة <strong>P/m ثابتة</strong>. تُسمى هذه النسبة <strong>شدة الجاذبية g</strong>.<br><br>
+<div class="formula-box">P = m × g</div>
+<ul style="margin:0.5rem 0 0.5rem 1.2rem;line-height:2;text-align:right">
+<li><strong>P</strong>: الوزن بالنيوتن (N)</li>
+<li><strong>m</strong>: الكتلة بالكيلوغرام (kg)</li>
+<li><strong>g</strong>: شدة الجاذبية بـ N·kg⁻¹</li>
+</ul>
+<div class="note-box" style="text-align:right">في تونس: g = 9,8 N·kg⁻¹. في الحسابات المبسطة: g ≈ 10 N·kg⁻¹</div>`
+      },
+      {
+        title:'Variation de g selon le lieu',titleAr:'تغير g حسب المكان',
+        fr:`<table class="table-mini"><thead><tr><th>Lieu</th><th>Latitude (°)</th><th>g (N·kg⁻¹)</th></tr></thead>
+<tbody>
+<tr><td>Équateur</td><td>0°</td><td>9,78</td></tr>
+<tr><td>Tunis</td><td>37°</td><td>9,80</td></tr>
+<tr><td>Pôle Nord</td><td>90°</td><td>9,83</td></tr>
+</tbody></table>
+<br>
+<strong>Règles :</strong><br>
+• g <strong class="hlp">diminue</strong> quand l'altitude <strong>augmente</strong>.<br>
+• g <strong class="hl">augmente</strong> quand la latitude <strong>augmente</strong>.`,
+        ar:`<table class="table-mini"><thead><tr><th>المكان</th><th>خط العرض (°)</th><th>g (N·kg⁻¹)</th></tr></thead>
+<tbody>
+<tr><td>خط الاستواء</td><td>0°</td><td>9,78</td></tr>
+<tr><td>تونس</td><td>37°</td><td>9,80</td></tr>
+<tr><td>القطب الشمالي</td><td>90°</td><td>9,83</td></tr>
+</tbody></table>
+<br>
+<strong>القواعد:</strong><br>
+• g <strong>تنقص</strong> عندما يزداد الارتفاع.<br>
+• g <strong>تزداد</strong> عندما يزداد خط العرض.`
+      }
+    ]
+  },
+  {
+    id:'forces', icon:'🏋️', title:'Actions Mécaniques — Forces', titleAr:'الأفعال الميكانيكية — القوى',
+    sections:[
+      {
+        title:"Définition d'une action mécanique",titleAr:'تعريف الفعل الميكانيكي',
+        fr:`Une <strong class="hl">action mécanique</strong> est une action exercée par un objet A sur un objet B. Elle se manifeste par deux types d'effets :<br><br>
+<strong>1. Effets statiques :</strong> déformation de l'objet (ressort allongé, pâte déformée).<br>
+<strong>2. Effets dynamiques :</strong> modification, provocation ou empêchement du mouvement (balle qui tombe, porte qui tourne).`,
+        ar:`الفعل الميكانيكي هو فعل يمارسه جسم A على جسم B. يتجلى في نوعين من التأثيرات:<br><br>
+<strong>1. التأثيرات الساكنة:</strong> تشوه الجسم (تمدد نابض، تشوه معجون).<br>
+<strong>2. التأثيرات الحركية:</strong> تعديل أو إحداث أو إيقاف الحركة (كرة تسقط، باب يدور).`
+      },
+      {
+        title:"Caractéristiques d'une force",titleAr:'خصائص القوة',
+        fr:`Une force est modélisée par un <strong class="hlb">vecteur force</strong> ⃗F défini par 4 caractéristiques :<br><br>
+<table class="table-mini"><thead><tr><th>Caractéristique</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td>📍 Point d'application</td><td>Le point où la force est appliquée</td></tr>
+<tr><td>→ Direction (droite d'action)</td><td>La droite sur laquelle agit la force</td></tr>
+<tr><td>▶ Sens</td><td>La direction dans laquelle la force agit</td></tr>
+<tr><td>💪 Valeur (intensité)</td><td>Mesurée en Newton (N) avec un dynamomètre</td></tr>
+</tbody></table>`,
+        ar:`تُمثَّل القوة بـ <strong>متجه قوة</strong> ⃗F يُعرَّف بـ 4 خصائص:<br><br>
+<table class="table-mini"><thead><tr><th>الخاصية</th><th>الوصف</th></tr></thead>
+<tbody>
+<tr><td>📍 نقطة التطبيق</td><td>النقطة التي تُطبَّق فيها القوة</td></tr>
+<tr><td>→ الاتجاه (خط العمل)</td><td>المستقيم الذي تعمل فيه القوة</td></tr>
+<tr><td>▶ الجهة</td><td>الجهة التي تعمل نحوها القوة</td></tr>
+<tr><td>💪 القيمة (الشدة)</td><td>تُقاس بالنيوتن (N) باستخدام الديناموميتر</td></tr>
+</tbody></table>`
+      },
+      {
+        title:"Forces de contact et à distance",titleAr:'قوى التماس وقوى المسافة',
+        fr:`<strong class="hl">Force de contact :</strong> nécessite un contact physique entre les deux corps.<br>
+<em>Exemples :</em> tension d'un fil, réaction d'un plan, poussée d'une main.<br><br>
+<strong class="hlp">Force à distance :</strong> n'exige aucun contact physique.<br>
+<em>Exemples :</em> le poids (attraction gravitationnelle), force magnétique, force électrostatique.`,
+        ar:`<strong>قوة التماس:</strong> تتطلب تلاصقاً جسدياً بين الجسمين.<br>
+<em>أمثلة:</em> توتر الخيط، ردّ فعل سطح، دفعة اليد.<br><br>
+<strong>قوة المسافة:</strong> لا تستلزم أي تلاصق جسدي.<br>
+<em>أمثلة:</em> الوزن (جذب الأرض)، القوة المغناطيسية، القوة الكهروساكنة.`
+      },
+      {
+        title:"Loi de Hooke (ressort)",titleAr:'قانون هوك (النابض)',
+        fr:`Quand on étire ou comprime un ressort d'une longueur x, la <strong class="hl">tension du ressort</strong> est proportionnelle à l'allongement :<br><br>
+<div class="formula-box">‖T⃗‖ = k · x &nbsp;&nbsp; ou &nbsp;&nbsp; T = k · (ℓ − ℓ₀)</div>
+<ul style="margin:0.5rem 0 0.5rem 1.2rem;line-height:2;">
+<li><strong>T</strong> : tension du ressort (N)</li>
+<li><strong>k</strong> : constante de raideur (N·m⁻¹)</li>
+<li><strong>x = ℓ − ℓ₀</strong> : allongement (m)</li>
+<li><strong>ℓ₀</strong> : longueur à vide (m), <strong>ℓ</strong> : longueur sous charge (m)</li>
+</ul>`,
+        ar:`عند إطالة أو ضغط نابض بمقدار x، تتناسب <strong>توتر النابض</strong> مع الإطالة:<br><br>
+<div class="formula-box">‖T⃗‖ = k × x &nbsp;&nbsp; أو &nbsp;&nbsp; T = k × (ℓ − ℓ₀)</div>
+<ul style="margin:0.5rem 0 0.5rem 1.2rem;line-height:2;text-align:right">
+<li><strong>T</strong>: توتر النابض (N)</li>
+<li><strong>k</strong>: ثابت المرونة (N·m⁻¹)</li>
+<li><strong>x = ℓ − ℓ₀</strong>: الإطالة (m)</li>
+<li><strong>ℓ₀</strong>: الطول الطبيعي (m)، <strong>ℓ</strong>: الطول تحت الحمل (m)</li>
+</ul>`
+      }
+    ]
+  },
+  {
+    id:'equilibre', icon:'🎯', title:'Équilibre sous deux forces', titleAr:'التوازن تحت قوتين',
+    sections:[
+      {
+        title:"Condition d'équilibre",titleAr:'شرط التوازن',
+        fr:`Un solide soumis à <strong class="hl">deux forces</strong> est en équilibre si et seulement si les deux forces sont :<br><br>
+<div class="formula-box">F⃗₁ + F⃗₂ = 0⃗</div>
+Ce qui signifie que les deux forces doivent :<br><br>
+<table class="table-mini"><thead><tr><th>Condition</th><th>Explication</th></tr></thead>
+<tbody>
+<tr><td>✅ Même direction</td><td>Colinéaires (sur la même droite d'action)</td></tr>
+<tr><td>✅ Même valeur</td><td>‖F⃗₁‖ = ‖F⃗₂‖</td></tr>
+<tr><td>✅ Sens opposés</td><td>L'une va vers le haut, l'autre vers le bas</td></tr>
+</tbody></table>`,
+        ar:`الجسم الخاضع لـ<strong>قوتين</strong> يكون في حالة توازن إذا وفقط إذا كانت القوتان:<br><br>
+<div class="formula-box">F⃗₁ + F⃗₂ = 0⃗</div>
+وهذا يعني أن القوتين يجب أن تحققا:<br><br>
+<table class="table-mini"><thead><tr><th>الشرط</th><th>التفسير</th></tr></thead>
+<tbody>
+<tr><td>✅ نفس الاتجاه</td><td>متراصتان على خط عمل واحد</td></tr>
+<tr><td>✅ نفس القيمة</td><td>‖F⃗₁‖ = ‖F⃗₂‖</td></tr>
+<tr><td>✅ جهتان متعاكستان</td><td>إحداهما للأعلى والأخرى للأسفل</td></tr>
+</tbody></table>`
+      },
+      {
+        title:"Exemples d'application",titleAr:'أمثلة تطبيقية',
+        fr:`<strong>Exemple 1 — Solide suspendu à un fil :</strong><br>
+Le solide S est soumis à : son <strong>poids P⃗</strong> (vers le bas) et la <strong>tension du fil T⃗</strong> (vers le haut).<br>
+À l'équilibre : <strong>‖T⃗‖ = ‖P⃗‖ = m·g</strong><br><br>
+<strong>Exemple 2 — Solide sur un ressort :</strong><br>
+Le solide S est soumis à : son <strong>poids P⃗</strong> (vers le bas) et la <strong>tension du ressort T⃗</strong> (vers le haut).<br>
+À l'équilibre : <strong>T = P = m·g</strong><br>
+L'allongement du ressort : <strong>x = P/k = mg/k</strong>`,
+        ar:`<strong>مثال 1 — جسم معلّق بخيط:</strong><br>
+الجسم S يخضع لـ: <strong>وزنه P⃗</strong> (نحو الأسفل) و<strong>توتر الخيط T⃗</strong> (نحو الأعلى).<br>
+عند التوازن: <strong>‖T⃗‖ = ‖P⃗‖ = m·g</strong><br><br>
+<strong>مثال 2 — جسم على نابض:</strong><br>
+الجسم S يخضع لـ: <strong>وزنه P⃗</strong> (نحو الأسفل) و<strong>توتر النابض T⃗</strong> (نحو الأعلى).<br>
+عند التوازن: <strong>T = P = m·g</strong><br>
+إطالة النابض: <strong>x = P/k = mg/k</strong>`
+      }
+    ]
+  },
+  {
+    id:'tension', icon:'🔌', title:'Tension Électrique', titleAr:'التوتر الكهربائي',
+    sections:[
+      {
+        title:'Définition et mesure',titleAr:'التعريف والقياس',
+        fr:`La <strong class="hl">tension électrique</strong> est une grandeur qui caractérise un dipôle. Elle est notée <strong>U</strong> et s'exprime en <strong>Volt (V)</strong>.<br><br>
+Elle se mesure à l'aide d'un <strong class="hlb">voltmètre</strong> (symbole V) branché <strong>en dérivation (parallèle)</strong> aux bornes du dipôle.<br><br>
+<table class="table-mini"><thead><tr><th>Cas</th><th>Tension</th></tr></thead>
+<tbody>
+<tr><td>Générateur isolé</td><td>Non nulle = tension à vide (f.é.m.)</td></tr>
+<tr><td>Récepteur isolé</td><td>Nulle</td></tr>
+<tr><td>Fil conducteur</td><td>Toujours nulle</td></tr>
+<tr><td>Interrupteur fermé</td><td>Nulle (équivalent à un fil)</td></tr>
+</tbody></table>`,
+        ar:`<strong>التوتر الكهربائي</strong> هو كمية تُميّز ثنائي القطب. يُرمز له بـ <strong>U</strong> ويُعبَّر عنه بـ <strong>فولت (V)</strong>.<br><br>
+يُقاس بـ <strong>الفولطمتر</strong> (رمزه V) المُركَّب <strong>على التوازي</strong> مع طرفَي ثنائي القطب.<br><br>
+<table class="table-mini"><thead><tr><th>الحالة</th><th>التوتر</th></tr></thead>
+<tbody>
+<tr><td>مولّد معزول</td><td>غير صفري = قوة دافعة كهربائية</td></tr>
+<tr><td>مستقبل معزول</td><td>صفري</td></tr>
+<tr><td>سلك موصل</td><td>صفري دائماً</td></tr>
+<tr><td>قاطع مغلق</td><td>صفري (مكافئ لسلك)</td></tr>
+</tbody></table>`
+      },
+      {
+        title:'Tension algébrique et loi des mailles',titleAr:'التوتر الجبري وقانون الأشبكة',
+        fr:`La tension est une <strong class="hlp">grandeur algébrique</strong> : elle peut être positive ou négative.<br><br>
+<div class="formula-box">U<sub>AB</sub> = −U<sub>BA</sub></div>
+<strong>Loi des mailles :</strong> Dans une maille fermée, la <strong>somme algébrique</strong> des tensions est nulle.<br><br>
+<div class="formula-box">ΣU = 0</div>`,
+        ar:`التوتر <strong>كمية جبرية</strong>: يمكن أن يكون موجباً أو سالباً.<br><br>
+<div class="formula-box">U<sub>AB</sub> = −U<sub>BA</sub></div>
+<strong>قانون الأشبكة:</strong> في أي شبكة مغلقة، مجموع التوترات الجبرية يساوي صفراً.<br><br>
+<div class="formula-box">ΣU = 0</div>`
+      }
+    ]
+  },
+  {
+    id:'intensite', icon:'📊', title:"Intensité du courant", titleAr:'شدة التيار الكهربائي',
+    sections:[
+      {
+        title:'Mesure de l\'intensité',titleAr:'قياس شدة التيار',
+        fr:`L'<strong class="hl">intensité I</strong> du courant électrique mesure la quantité de charges qui passe par seconde dans un conducteur.<br>
+Elle s'exprime en <strong>Ampère (A)</strong> ou <strong>milliampère (mA)</strong>.<br><br>
+<div class="formula-box">1 A = 1000 mA</div>
+L'<strong class="hlb">ampèremètre</strong> se branche <strong>en série</strong> dans le circuit (symbole A).`,
+        ar:`<strong>شدة التيار I</strong> تقيس كمية الشحنات التي تمر في الثانية داخل موصل.<br>
+تُعبَّر عنها بـ <strong>أمبير (A)</strong> أو <strong>ميلي أمبير (mA)</strong>.<br><br>
+<div class="formula-box">1 A = 1000 mA</div>
+<strong>الأمبيرمتر</strong> يُركَّب <strong>على التوالي</strong> في الدائرة (رمزه A).`
+      },
+      {
+        title:'Lois des circuits',titleAr:'قوانين الدوائر',
+        fr:`<strong>Circuit en série (unicité de l'intensité) :</strong><br>
+L'intensité est la <strong class="hl">même en tout point</strong> du circuit en série.<br>
+<div class="formula-box">I₁ = I₂ = I₃ = ... = I</div>
+<br>
+<strong>Circuit en dérivation (additivité) :</strong><br>
+L'intensité dans la branche principale est égale à la <strong class="hlp">somme des intensités</strong> des branches dérivées.<br>
+<div class="formula-box">I = I₁ + I₂</div>
+<br>
+<strong>Loi des nœuds :</strong> La somme des intensités entrantes = somme des intensités sortantes.`,
+        ar:`<strong>الدائرة التوالية (وحدانية شدة التيار):</strong><br>
+شدة التيار <strong>نفسها في كل نقطة</strong> من الدائرة التوالية.<br>
+<div class="formula-box">I₁ = I₂ = I₃ = ... = I</div>
+<br>
+<strong>الدائرة التوازية (جمعية شدة التيار):</strong><br>
+شدة التيار في الفرع الرئيسي تساوي <strong>مجموع شدات</strong> الفروع المشتقة.<br>
+<div class="formula-box">I = I₁ + I₂</div>
+<br>
+<strong>قانون العقد:</strong> مجموع الشدات الداخلة = مجموع الشدات الخارجة.`
+      }
+    ]
+  },
+  {
+    id:'concentration', icon:'🧪', title:'Concentration d\'une solution', titleAr:'تركيز محلول',
+    sections:[
+      {
+        title:'Concentration massique',titleAr:'التركيز الكتلي',
+        fr:`La <strong class="hl">concentration massique C</strong> d'un soluté est le rapport de la masse du soluté dissous au volume de la solution :<br><br>
+<div class="formula-box">C = m / V</div>
+<ul style="margin:0.5rem 0 0.5rem 1.2rem;line-height:2;">
+<li><strong>m</strong> : masse du soluté dissous (g)</li>
+<li><strong>V</strong> : volume de la solution (L)</li>
+<li><strong>C</strong> : concentration massique (g·L⁻¹)</li>
+</ul>`,
+        ar:`<strong>التركيز الكتلي C</strong> لمذاب هو نسبة كتلة المذاب إلى حجم المحلول:<br><br>
+<div class="formula-box">C = m / V</div>
+<ul style="margin:0.5rem 0 0.5rem 1.2rem;line-height:2;text-align:right">
+<li><strong>m</strong>: كتلة المذاب (g)</li>
+<li><strong>V</strong>: حجم المحلول (L)</li>
+<li><strong>C</strong>: التركيز الكتلي (g·L⁻¹)</li>
+</ul>`
+      },
+      {
+        title:'Concentration molaire',titleAr:'التركيز المولي',
+        fr:`La <strong class="hlp">concentration molaire C</strong> est le rapport de la quantité de matière au volume :<br><br>
+<div class="formula-box">C = n / V</div>
+<ul style="margin:0.5rem 0 0.5rem 1.2rem;line-height:2;">
+<li><strong>n</strong> : quantité de matière (mol)</li>
+<li><strong>V</strong> : volume (L)</li>
+<li><strong>C</strong> : concentration molaire (mol·L⁻¹)</li>
+</ul>
+<strong>Relation :</strong> n = m / M  (M = masse molaire en g·mol⁻¹)`,
+        ar:`<strong>التركيز المولي C</strong> هو نسبة كمية المادة إلى الحجم:<br><br>
+<div class="formula-box">C = n / V</div>
+<ul style="margin:0.5rem 0 0.5rem 1.2rem;line-height:2;text-align:right">
+<li><strong>n</strong>: كمية المادة (mol)</li>
+<li><strong>V</strong>: الحجم (L)</li>
+<li><strong>C</strong>: التركيز المولي (mol·L⁻¹)</li>
+</ul>
+<strong>العلاقة:</strong> n = m / M  (M = الكتلة المولية بـ g·mol⁻¹)`
+      }
+    ]
+  },
+  {
+    id:'electrisation', icon:'⚡', title:'Phénomène d\'électrisation', titleAr:'ظاهرة التكهرب',
+    sections:[
+      {
+        title:'Types de charges et interactions',titleAr:'أنواع الشحنات والتفاعلات',
+        fr:`Il existe deux types de charges électriques : <strong class="hl">charges positives (+)</strong> et <strong class="hlp">charges négatives (−)</strong>.<br><br>
+<table class="table-mini"><thead><tr><th>Charges</th><th>Interaction</th></tr></thead>
+<tbody>
+<tr><td>Même signe (+/+ ou −/−)</td><td>↔ Répulsion</td></tr>
+<tr><td>Signes contraires (+/−)</td><td>↕ Attraction</td></tr>
+</tbody></table>
+<div class="note-box">L'ébonite frottée porte des charges <strong>négatives</strong>. Le verre frotté porte des charges <strong>positives</strong>.</div>`,
+        ar:`يوجد نوعان من الشحنات الكهربائية: <strong>شحنات موجبة (+)</strong> و<strong>شحنات سالبة (−)</strong>.<br><br>
+<table class="table-mini"><thead><tr><th>الشحنات</th><th>التفاعل</th></tr></thead>
+<tbody>
+<tr><td>نفس الإشارة (+/+ أو −/−)</td><td>↔ تنافر</td></tr>
+<tr><td>إشارتان مختلفتان (+/−)</td><td>↕ تجاذب</td></tr>
+</tbody></table>
+<div class="note-box" style="text-align:right">الإيبونيت المحكوك يحمل شحنات <strong>سالبة</strong>. الزجاج المحكوك يحمل شحنات <strong>موجبة</strong>.</div>`
+      },
+      {
+        title:"Modes d'électrisation",titleAr:'طرق التكهرب',
+        fr:`<strong>1. Par frottement :</strong> Le contact et le frottement entre deux corps transfèrent des électrons de l'un à l'autre.<br><br>
+<strong>2. Par influence :</strong> L'approche d'un corps chargé redistribue les charges dans un conducteur sans contact.<br><br>
+<strong>3. Par contact :</strong> Le contact avec un corps chargé transfère des charges ; le corps acquiert le <em>même signe</em> que le corps électrisant.<br><br>
+<div class="formula-box">Charge élémentaire : e = 1,6 × 10⁻¹⁹ C</div>`,
+        ar:`<strong>1. بالاحتكاك:</strong> يُعيد الاحتكاك بين جسمين توزيع الإلكترونات من أحدهما إلى الآخر.<br><br>
+<strong>2. بالتأثير:</strong> اقتراب جسم مشحون يُعيد توزيع الشحنات في موصل دون تلاصق.<br><br>
+<strong>3. بالتماس:</strong> التلاصق مع جسم مشحون ينقل شحنات؛ يكتسب الجسم <em>نفس إشارة</em> الجسم المكهرب.<br><br>
+<div class="formula-box">الشحنة الأولية: e = 1,6 × 10⁻¹⁹ C</div>`
+      }
+    ]
+  }
+];
+ 
+// ─────────────────────────────────────────
+//  DATA: DEVOIRS
+// ─────────────────────────────────────────
+const DEVOIRS = [
+  {
+    id:'dc1', year:'2014/2015', prof:'Prof. Bougacha Hichem', lycee:'Lycée Regueb',
+    title:'Devoir de Contrôle N°3', total:20,
+    exercises:[
+      {
+        id:'c1e1',subject:'chimie',title:'Exercice 1 — Réaction Chimique',points:4,
+        context:"À une température voisine de 300°C, l'eau (état gaz) réagit avec l'éthène (C₂H₄) pour donner l'éthanol (C₂H₅OH). Cette réaction se fait en présence de l'acide sulfurique H₂SO₄ qui accélère la réaction.",
+        questions:[
+          {id:'q1',text:'1/ Identifier les réactifs et les produits.',points:1},
+          {id:'q2',text:'2/ Écrire le schéma de la réaction.',points:1},
+          {id:'q3a',text:"3a/ Préciser le caractère qualitatif de cette réaction (exothermique/endothermique, rapide/lente, amorcée/spontanée).",points:1},
+          {id:'q3b',text:"3b/ Préciser le rôle de l'acide sulfurique H₂SO₄.",points:1}
+        ]
+      },
+      {
+        id:'c1e2',subject:'chimie',title:'Exercice 2 — Équilibrer les équations',points:4,
+        context:"Équilibrer les équations chimiques suivantes en ajoutant les coefficients stœchiométriques.",
+        questions:[
+          {id:'q4',text:'1/ Fe + O₂ → Fe₂O₃',points:1},
+          {id:'q5',text:'2/ C₆H₁₂ + O₂ → CO₂ + H₂O',points:1},
+          {id:'q6',text:'3/ Fe + H₂O → Fe₂O₃ + H₂',points:1},
+          {id:'q7',text:'4/ AlCl₃ + NaOH → Al(OH)₃ + NaCl',points:1}
+        ]
+      },
+      {
+        id:'c1e3',subject:'physique',title:'Exercice 1 — Forces et équilibre (Loi de Hooke)',points:6,
+        context:"Un solide S de masse m = 600 g est accroché à l'extrémité d'un ressort de longueur à vide ℓ₀ = 10 cm et de raideur K = 200 N·m⁻¹. On prendra g = 10 N·kg⁻¹.",
+        questions:[
+          {id:'q8',text:'1a/ Citer les forces qui s\'exercent sur le solide S.',points:1},
+          {id:'q9',text:'1b/ Écrire la condition d\'équilibre du solide S.',points:1},
+          {id:'q10',text:'2a/ Calculer la valeur du poids ‖P⃗‖.',points:1},
+          {id:'q11',text:'2b/ Déduire la valeur de la tension du ressort ‖T⃗‖.',points:1},
+          {id:'q12',text:'3/ Déterminer à l\'équilibre la longueur ℓ du ressort.',points:1},
+          {id:'q13',text:'4/ Donner les caractéristiques des forces (direction, sens, valeur, point d\'application).',points:1}
+        ]
+      },
+      {
+        id:'c1e4',subject:'physique',title:'Exercice 2 — Actions mécaniques',points:6,
+        context:"Une bille en fer est soumise à trois actions : l'aimant, le fil de suspension et la Terre. Échelle 1 cm → 2N. On donne 4 vecteurs forces F⃗₁ (horizontal, droite), F⃗₂ (45°, bas-droite), F⃗₃ (vertical, haut), F⃗₄ (horizontal, gauche).",
+        questions:[
+          {id:'q14',text:"1/ L'aimant exerce une force sur la bille : Vrai/Faux ? Force de contact ou à distance ?",points:0.5},
+          {id:'q15',text:"2/ Le fil n'exerce pas une force sur la bille : Vrai/Faux ? Force de contact ou à distance ?",points:0.5},
+          {id:'q16',text:"3/ La Terre exerce une force sur la bille : Vrai/Faux ? Force de contact ou à distance ?",points:0.5},
+          {id:'q17',text:'4/ Citer les caractéristiques de chaque vecteur force F⃗₁, F⃗₂, F⃗₃, F⃗₄ (direction, sens, valeur). Échelle 1cm→2N : F₁=3cm, F₂=4cm, F₃=2.5cm, F₄=3cm.',points:3},
+          {id:'q18',text:'5/ Préciser les caractéristiques communes à F⃗₁ et F⃗₄, puis à F⃗₁ et F⃗₂.',points:1}
+        ]
+      }
+    ]
+  },
+  {
+    id:'dc2', year:'2013/2014', prof:'Prof. M. Zaidi', lycee:'Lycée Sidi Bouzid',
+    title:'Devoir de Contrôle N°3', total:20,
+    exercises:[
+      {
+        id:'d2e1',subject:'chimie',title:'Exercice 1 — Réaction chimique',points:4,
+        context:"On présente à une flamme un mélange de méthane (CH₄) et de dioxygène (O₂). Une explosion se produit et on constate la formation de l'eau et un gaz qui trouble l'eau de chaux (CO₂).",
+        questions:[
+          {id:'d2q1',text:'1/ Montrer qu\'il se produit une réaction chimique (justifier).',points:1},
+          {id:'d2q2',text:'2a/ Indiquer les réactifs et les produits de la réaction.',points:1},
+          {id:'d2q3',text:'2b/ Écrire le schéma de la réaction.',points:1},
+          {id:'d2q4',text:'2c/ Donner deux caractères pour cette réaction.',points:1}
+        ]
+      },
+      {
+        id:'d2e2',subject:'chimie',title:'Exercice 2 — Équilibrer les équations',points:4,
+        context:"Équilibrer les équations chimiques suivantes.",
+        questions:[
+          {id:'d2q5',text:'1/ HI + Cl₂ → I₂ + HCl',points:1},
+          {id:'d2q6',text:'2/ Na₂O + H₂O → NaOH',points:1},
+          {id:'d2q7',text:'3/ CH₄ + O₂ → CO₂ + H₂O',points:1},
+          {id:'d2q8',text:'4/ KNO₃ → K₂O + N₂O + O₂',points:1}
+        ]
+      },
+      {
+        id:'d2e3',subject:'physique',title:'Exercice 1 — Vitesse d\'un cycliste',points:3,
+        context:"Un cycliste parcourt la distance d = 2 km pendant la durée Δt = 3 min 20 s.",
+        questions:[
+          {id:'d2q9',text:'1/ Exprimer la distance d en mètre et la durée Δt en seconde.',points:1},
+          {id:'d2q10',text:'2/ Calculer la vitesse moyenne du cycliste en m/s puis en km/h.',points:2}
+        ]
+      },
+      {
+        id:'d2e4',subject:'physique',title:'Exercice 2 — Poids et équilibre',points:9,
+        context:"On réalise l'expérience : un solide (S) est suspendu à un dynamomètre (via un fil). Le dynamomètre indique 4,9 N. On donne g = 9,8 N·kg⁻¹.",
+        questions:[
+          {id:'d2q11',text:"1a/ Rappeler la définition du poids d'un corps.",points:1},
+          {id:'d2q12',text:"1b/ Le poids est-il une force de contact ou à distance ? localisée ou répartie ?",points:1},
+          {id:'d2q13',text:'1c/ Donner les caractéristiques du poids du solide (S).',points:1},
+          {id:'d2q14',text:'1e/ Calculer la masse m du solide avec g = 9,8 N·kg⁻¹.',points:2},
+          {id:'d2q15',text:"2a/ Qu'appelle-t-on la force exercée par le fil sur le solide (S) ?",points:1},
+          {id:'d2q16',text:'2b/ Cette force est-elle de contact ou à distance ? localisée ou répartie ?',points:1},
+          {id:'d2q17',text:'2c/ Écrire la condition d\'équilibre de (S) et déduire la valeur de la force du fil.',points:2}
+        ]
+      }
+    ]
+  },
+  {
+    id:'dc3', year:'2013/2014', prof:'Prof. Mzoughi Salah', lycee:'Lycée Tebourba',
+    title:'Devoir de Contrôle N°3', total:20,
+    exercises:[
+      {
+        id:'d3e1',subject:'chimie',title:'Exercice 1 — Réaction chimique H₂/O₂',points:4,
+        context:"Dès qu'on enflamme un mélange gazeux de dihydrogène (H₂) et de dioxygène (O₂), il se produit une réaction violente. Le récipient s'échauffe et il se forme de l'eau (H₂O).",
+        questions:[
+          {id:'d3q1',text:'1/ Définir une réaction chimique.',points:0.75},
+          {id:'d3q2',text:'2/ Donner un des caractères de cette réaction et justifier.',points:0.75},
+          {id:'d3q3',text:'3/ Quels sont les réactifs et les produits ?',points:1},
+          {id:'d3q4',text:'4/ Écrire le schéma de la réaction.',points:0.75},
+          {id:'d3q5',text:'5/ Écrire correctement l\'équation équilibrée de la réaction.',points:0.75}
+        ]
+      },
+      {
+        id:'d3e2',subject:'chimie',title:'Exercice 2 — Concentration d\'une solution KNO₃',points:4,
+        context:"On fait dissoudre m₁ = 20,2 g de nitrate de potassium (KNO₃, M = 101 g·mol⁻¹) dans l'eau pour obtenir une solution (S₁) de volume V₁ = 100 mL.",
+        questions:[
+          {id:'d3q6',text:'1a/ Préciser pour cette solution le solvant et le soluté.',points:0.5},
+          {id:'d3q7',text:'1b/ Déterminer la concentration massique Cₘ de la solution (S₁).',points:0.5},
+          {id:'d3q8',text:'1c/ En déduire sa concentration molaire Cₙ. (M(KNO₃) = 101 g·mol⁻¹)',points:0.5},
+          {id:'d3q9',text:'2/ On prépare à partir de (S₁) une solution (S₂) de volume V₂ = 50 mL et de Cₘ₂ = 80 g·L⁻¹. Déterminer le volume V₀ à prélever de (S₁).',points:0.5},
+          {id:'d3q10',text:'3a/ Définir la solubilité d\'un soluté dans une solution.',points:0.5},
+          {id:'d3q11',text:'3b/ À 60°C on dissout 35 g de KNO₃ dans 50 mL d\'eau. Solubilité à 60°C = 1100 g·L⁻¹. La solution est-elle saturée ?',points:0.5},
+          {id:'d3q12',text:'3c/ Si on refroidit jusqu\'à 20°C (solubilité=330 g·L⁻¹), que se passe-t-il ? Calculer la masse du dépôt.',points:1}
+        ]
+      },
+      {
+        id:'d3e3',subject:'physique',title:'Exercice 1 — Dynamomètre et action mécanique',points:5,
+        context:"Partie A : Observer un dynamomètre gradué. Partie B : Une personne pousse un wagonnet. Point d'application C, droite d'action horizontale, sens vers la droite, valeur 50 N.",
+        questions:[
+          {id:'d3q13',text:"PartA/ Quel est le nom de l'appareil ? En quelle unité est-il gradué ? Lire la valeur de la force indiquée.",points:1},
+          {id:'d3q14',text:'PartB-1/ Définir une action mécanique.',points:1},
+          {id:'d3q15',text:'PartB-2/ Compléter le tableau des caractéristiques de la force (point d\'application, droite d\'action, sens, valeur).',points:1},
+          {id:'d3q16',text:'PartB-3/ À quelle échelle 1cm→10N doit-on représenter la force ? Calculer la longueur du vecteur.',points:1}
+        ]
+      },
+      {
+        id:'d3e4',subject:'physique',title:'Exercice 2 — Poids sur différentes planètes',points:7,
+        context:"Youssef est un Martien dont la masse sur Mars est de 50 kg. Planètes : Mercure g=3,7 ; Vénus g=8,9 ; Terre g=9,8 ; Mars g=3,7 ; Jupiter g=24,8 ; Saturne g=10,4 ; Uranus g=8,9 ; Neptune g=11,2 (N/kg).",
+        questions:[
+          {id:'d3q17',text:'1/ Quelle est la formule reliant le poids et la masse ?',points:1},
+          {id:'d3q18',text:'2/ Quel est son poids sur Mars ?',points:1.5},
+          {id:'d3q19',text:'3/ Quelle sera sa masse sur Terre ? Quel sera son poids sur Terre ?',points:1.5},
+          {id:'d3q20',text:'4/ L\'été dernier son poids était 520 N. Sur quelle planète était-il allé ?',points:1.5},
+          {id:'d3q21',text:'5/ Sur quelle planète aurait-il le même poids que sur Mars ?',points:1.5}
+        ]
+      }
+    ]
+  },
+  {
+    id:'dc4', year:'2012/2013', prof:'Prof. Trimech Abdelhakim', lycee:'École préparatoire Menzel Ennour',
+    title:'Devoir de Contrôle N°3', total:20,
+    exercises:[
+      {
+        id:'d4e1',subject:'chimie',title:'Exercice 1 — Aluminium + Acide chlorhydrique',points:7.5,
+        context:"Dès qu'on introduit de l'aluminium en poudre (Al) dans l'acide chlorhydrique (HCl), il se dégage du dihydrogène (H₂) et on obtient une solution de chlorure d'aluminium (AlCl₃). On constate une élévation de température.",
+        questions:[
+          {id:'d4q1',text:"1/ Cette transformation est-elle une réaction chimique ? Justifier.",points:1.5},
+          {id:'d4q2',text:'2/ Quels sont les caractères qualitatifs de cette réaction ? Justifier.',points:2.5},
+          {id:'d4q3',text:'3/ Quels sont les réactifs et les produits ?',points:1},
+          {id:'d4q4',text:'4/ Écrire le schéma de la réaction chimique.',points:0.5},
+          {id:'d4q5',text:'5/ Écrire correctement l\'équation de la réaction équilibrée.',points:1}
+        ]
+      },
+      {
+        id:'d4e2',subject:'chimie',title:'Exercice 2 — Équilibrer les équations',points:1.5,
+        context:"Équilibrer les équations chimiques suivantes.",
+        questions:[
+          {id:'d4q6',text:'1/ C₂H₅ + Cl₂ → C + HCl',points:0.5},
+          {id:'d4q7',text:'2/ N₂ + H₂ → NH₃',points:0.5},
+          {id:'d4q8',text:'3/ Na + O₂ → Na₂O',points:0.5}
+        ]
+      },
+      {
+        id:'d4e3',subject:'physique',title:'Exercice 1 — Poids et dynamomètre',points:5.5,
+        context:"Un solide S de masse m = 250 g accroché à un dynamomètre qui indique une valeur du poids ‖P⃗‖ = 2,45 N.",
+        questions:[
+          {id:'d4q9',text:"1/ Définir le poids d'un solide.",points:1},
+          {id:'d4q10',text:'2/ Donner les caractéristiques du poids (direction, sens, valeur, point d\'application).',points:1},
+          {id:'d4q11',text:'3/ Calculer la valeur de l\'intensité de pesanteur ‖g⃗‖ en ce lieu.',points:1},
+          {id:'d4q12',text:'4/ Quel est en ce lieu la masse m\' d\'un autre solide S\' dont la valeur de son poids est ‖P⃗‖ = 20 N ?',points:1}
+        ]
+      },
+      {
+        id:'d4e4',subject:'physique',title:'Exercice 2 — Équilibre et ressort',points:9.5,
+        context:"I- Un solide (S) de masse m = 500 g est suspendu à un fil lié à un support. On donne g = 10 N·kg⁻¹.\nII- Le solide S est accroché à un ressort de longueur à vide ℓ₀ = 22 cm et de constante de raideur k = 20 N·m⁻¹.",
+        questions:[
+          {id:'d4q13',text:'I-1/ Quelles sont les forces exercées sur le solide S ?',points:1},
+          {id:'d4q14',text:'I-3/ Donner la condition d\'équilibre de ce solide S.',points:1},
+          {id:'d4q15',text:'I-4a/ Déterminer la valeur du poids du solide S.',points:0.5},
+          {id:'d4q16',text:'I-4b/ Déduire la valeur de la tension du fil.',points:1},
+          {id:'d4q17',text:'II-2a/ Donner la valeur du poids ‖P⃗‖ du solide S (même masse 500g).',points:0.5},
+          {id:'d4q18',text:'II-2b/ Déduire la valeur de la tension du ressort à l\'équilibre.',points:1},
+          {id:'d4q19',text:"II-3a/ Déterminer l'allongement Δℓ du ressort en utilisant la loi de Hooke.",points:1},
+          {id:'d4q20',text:'II-3b/ En déduire la longueur ℓ du ressort à l\'équilibre.',points:1}
+        ]
+      }
+    ]
+  },
+  {
+    id:'dc5', year:'2009/2010', prof:'Prof. Khémili Lotfi', lycee:"Lycée Ibn Khaldoun - Ousseltia",
+    title:'Devoir de Contrôle N°3', total:20,
+    exercises:[
+      {
+        id:'d5e1',subject:'chimie',title:'Exercice 1 — Corriger les propositions',points:4,
+        context:"Les propositions suivantes sont fausses. Réécrire en les corrigeant.",
+        questions:[
+          {id:'d5q1',text:'1/ Une réaction chimique est une transformation au cours de laquelle des corps disparaissent : les PRODUITS et des nouveaux corps apparaissent : les RÉACTIFS.',points:2},
+          {id:'d5q2',text:"2/ Une réaction chimique est dite AMORCÉE si elle se produit sans action extérieure.",points:1},
+          {id:'d5q3',text:'3/ Une couche de rouille se forme sur un morceau de fer placé à l\'air après quelques semaines : c\'est une réaction RAPIDE.',points:1}
+        ]
+      },
+      {
+        id:'d5e2',subject:'chimie',title:'Exercice 2 — Al + NaOH réaction',points:4,
+        context:"Dans un tube à essai on place de l'aluminium en poudre + solution de soude (NaOH). T initiale = 25°C. Il se forme l'aluminate de sodium et du dihydrogène (H₂) qui produit une détonation. T finale = 56°C.",
+        questions:[
+          {id:'d5q4',text:'1/ Schématiser cette réaction chimique.',points:1},
+          {id:'d5q5',text:"2/ Entourer les propositions vraies : spontanée, lente, endothermique, exothermique, amorcée, rapide.",points:1.5},
+          {id:'d5q6',text:'3/ Expliquer pourquoi cette réaction est dite exothermique.',points:1.5}
+        ]
+      },
+      {
+        id:'d5e3',subject:'physique',title:'Exercice 1 — Poids de deux corps',points:5,
+        context:"Soit deux corps A et B de masses respectives mA = 200 g et mB = 300 g. On donne g = 10 N·kg⁻¹.",
+        questions:[
+          {id:'d5q7',text:"1/ Calculer les poids ‖P⃗_A‖ et ‖P⃗_B‖ de ces deux corps.",points:2},
+          {id:'d5q8',text:"2a/ Donner les caractéristiques du poids d'un corps.",points:1},
+          {id:'d5q9',text:'2b/ Représenter le poids de chaque corps (A sur plan horizontal P₁, B sur plan incliné P₂). Échelle 1 cm = 1 N.',points:2}
+        ]
+      },
+      {
+        id:'d5e4',subject:'physique',title:'Exercice 2 — Solide sur ressort + Loi de Hooke',points:7,
+        context:"Un solide (C) est accroché à un ressort (R) de constante de raideur K = 20 N·m⁻¹. À l'équilibre, le ressort s'est allongé de Δℓ = 5 cm. On donne g = 10 N·kg⁻¹.",
+        questions:[
+          {id:'d5q10',text:'2/ Écrire la condition d\'équilibre du corps (C).',points:1},
+          {id:'d5q11',text:'3/ En appliquant la loi de Hooke, déterminer la valeur de la tension du ressort.',points:2},
+          {id:'d5q12',text:'4/ Déduire la valeur de la masse m du corps (C).',points:1},
+          {id:'d5q13',text:"5/ Si on accroche une masse m' = 150 g au ressort, déterminer l'allongement Δℓ'.",points:1.5}
+        ]
+      }
+    ]
+  }
+];
+ 
+// ─────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────
+let state = {
+  name:'', section:'cours', currentId:null,
+  lang:'fr',
+  answers:{}, corrections:{}, grades:{}
+};
+ 
+// ─────────────────────────────────────────
+//  LOGIN
+// ─────────────────────────────────────────
+document.getElementById('name-input').addEventListener('keydown', e=>{
+  if(e.key==='Enter') startApp();
+});
+ 
+function startApp(){
+  const n = document.getElementById('name-input').value.trim();
+  if(!n){
+    document.getElementById('name-input').style.borderColor='var(--red)';
+    setTimeout(()=>document.getElementById('name-input').style.borderColor='',1000);
+    return;
+  }
+  state.name = n;
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='flex';
+  document.getElementById('header-name').textContent = '👤 ' + n;
+  switchSection('cours');
+}
+ 
+// ─────────────────────────────────────────
+//  SECTION SWITCH
+// ─────────────────────────────────────────
+function switchSection(sec){
+  state.section=sec; state.currentId=null;
+  document.getElementById('tab-cours').className='tab'+(sec==='cours'?' active':'');
+  document.getElementById('tab-devoirs').className='tab'+(sec==='devoirs'?' active':'');
+  renderSidebar();
+  document.getElementById('content').innerHTML = `
+    <div class="welcome">
+      <div class="welcome-emoji">${sec==='cours'?'📚':'📝'}</div>
+      <div class="welcome-title">${sec==='cours'?'Sélectionne un chapitre':'Choisis un devoir'}</div>
+      <div class="welcome-sub" style="font-family:'Cairo',sans-serif">${sec==='cours'?'اختر فصلاً من القائمة':'اختر فرضاً من القائمة'}</div>
+    </div>`;
+}
+ 
+// ─────────────────────────────────────────
+//  SIDEBAR
+// ─────────────────────────────────────────
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  if(state.section==='cours'){
+    sb.innerHTML = `<div class="sidebar-section">📚 Chapitres</div>` +
+      COURSES.map(c=>`<div class="sidebar-item${state.currentId===c.id?' active':''}" onclick="loadCourse('${c.id}')">
+        <span class="icon">${c.icon}</span>
+        <span>${c.title}</span>
+      </div>`).join('');
+  } else {
+    sb.innerHTML = `<div class="sidebar-section">📝 Devoirs</div>` +
+      DEVOIRS.map(d=>`<div class="sidebar-item${state.currentId===d.id?' active':''}" onclick="loadDevoir('${d.id}')">
+        <span class="icon">📋</span>
+        <div style="flex:1;overflow:hidden">
+          <div style="font-size:0.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.year}</div>
+          <div style="font-size:0.72rem;color:var(--text3)">${d.prof.replace('Prof. ','').replace('Prof: ','')}</div>
+        </div>
+        ${state.grades[d.id]!==undefined?`<span class="sidebar-badge pts">${state.grades[d.id]}/20</span>`:''}
+      </div>`).join('');
+  }
+}
+ 
+// ─────────────────────────────────────────
+//  LOAD COURSE
+// ─────────────────────────────────────────
+function loadCourse(id){
+  state.currentId = id;
+  renderSidebar();
+  const c = COURSES.find(x=>x.id===id);
+  if(!c) return;
+  const langBtns = `<div class="lang-toggle">
+    <button class="lang-btn${state.lang==='fr'?' active':''}" onclick="setLang('fr')">🇫🇷 Français</button>
+    <button class="lang-btn${state.lang==='ar'?' active':''}" onclick="setLang('ar')">🇹🇳 عربي</button>
+  </div>`;
+  const sections = c.sections.map((s,i)=>`
+    <div class="course-section">
+      <div class="section-head" onclick="toggleSection(this)">
+        <div class="dot"></div>
+        <div class="section-title">${s.title} <span style="color:var(--text3);font-size:0.8rem;font-family:'Cairo',sans-serif">&nbsp;${s.titleAr}</span></div>
+        <div class="section-arrow">▶</div>
+      </div>
+      <div class="section-body${i===0?' open':''}">
+        <div class="fr-content${state.lang==='ar'?' hide':''}">${s.fr}</div>
+        <div class="ar-content${state.lang==='ar'?' show':''}">${s.ar}</div>
+      </div>
+    </div>`).join('');
+ 
+  document.getElementById('content').innerHTML = `
+    <div style="animation:fadeUp 0.3s ease">
+      <div class="course-header">
+        <div class="course-icon">${c.icon}</div>
+        <div>
+          <div class="course-title">${c.title}</div>
+          <div class="course-subtitle-ar">${c.titleAr}</div>
+        </div>
+      </div>
+      ${langBtns}
+      ${sections}
+    </div>`;
+}
+ 
+function setLang(l){
+  state.lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent.includes(l==='fr'?'Fr':'عر')||b.textContent.includes(l==='fr'?'ança':'رب')));
+  // Update visibility
+  document.querySelectorAll('.fr-content').forEach(el=>el.classList.toggle('hide',l==='ar'));
+  document.querySelectorAll('.ar-content').forEach(el=>el.classList.toggle('show',l==='ar'));
+  // Refresh lang buttons
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    const isFr = b.textContent.includes('Fran') || b.textContent.includes('fr');
+    b.classList.toggle('active',(l==='fr'&&isFr)||(l==='ar'&&!isFr));
+  });
+}
+ 
+function toggleSection(head){
+  const body = head.nextElementSibling;
+  const arrow = head.querySelector('.section-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+ 
+// ─────────────────────────────────────────
+//  LOAD DEVOIR
+// ─────────────────────────────────────────
+function loadDevoir(id){
+  state.currentId = id;
+  renderSidebar();
+  const d = DEVOIRS.find(x=>x.id===id);
+  if(!d) return;
+  // Init answers
+  d.exercises.forEach(ex=>ex.questions.forEach(q=>{
+    if(!state.answers[id]) state.answers[id]={};
+    if(state.answers[id][q.id]===undefined) state.answers[id][q.id]='';
+  }));
+ 
+  const grade = state.grades[id];
+  const gradeHtml = grade!==undefined ?
+    `<div class="grade-badge show"><span>Note :</span><span class="grade-num ${grade>=14?'good':grade>=10?'mid':'low'}">${grade}/20</span></div>` : '';
+ 
+  const exHtml = d.exercises.map(ex=>renderExercise(d,ex)).join('');
+  const corrPanel = state.corrections[id] ? renderCorrectionPanel(id) : '';
+ 
+  document.getElementById('content').innerHTML = `
+    <div style="animation:fadeUp 0.3s ease">
+      <div class="devoir-header">
+        <div class="devoir-meta">
+          <h2>${d.title} — ${d.year}</h2>
+          <p>${d.lycee} &nbsp;·&nbsp; ${d.prof}</p>
+        </div>
+        <div class="devoir-total">
+          <div class="pts">${d.total}</div>
+          <div class="lbl">points</div>
+        </div>
+      </div>
+      ${exHtml}
+      <div class="correction-bar">
+        <button class="btn-correct" id="btn-corr-${id}" onclick="gradeDevoir('${id}')">
+          🔍 Corriger et noter
+        </button>
+        ${gradeHtml}
+      </div>
+      <div id="corr-panel-${id}">${corrPanel}</div>
+    </div>`;
+}
+ 
+function renderExercise(d, ex){
+  const subCls = ex.subject==='chimie'?'chimie':'physique';
+  const subLabel = ex.subject==='chimie'?'CHIMIE':'PHYSIQUE';
+  const qHtml = ex.questions.map(q=>{
+    const val = (state.answers[d.id]||{})[q.id]||'';
+    return `<div class="question-block">
+      <div class="q-label">
+        <span>${q.text}</span>
+        <span class="q-pts">${q.points} pt${q.points>1?'s':''}</span>
+      </div>
+      <textarea class="answer-input" placeholder="Votre réponse ici... / أجبكَ هنا..." rows="2"
+        oninput="saveAnswer('${d.id}','${q.id}',this.value)">${escHtml(val)}</textarea>
+    </div>`;
+  }).join('');
+  return `<div class="exercise-block">
+    <div class="ex-title-bar">
+      <span class="ex-subject ${subCls}">${subLabel}</span>
+      <span class="ex-title">${ex.title}</span>
+      <span class="ex-pts">${ex.points} pts</span>
+    </div>
+    ${ex.context?`<div class="context-box">${ex.context}</div>`:''}
+    ${qHtml}
+  </div>`;
+}
+ 
+function saveAnswer(dId, qId, val){
+  if(!state.answers[dId]) state.answers[dId]={};
+  state.answers[dId][qId] = val;
+}
+ 
+function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+ 
+// ─────────────────────────────────────────
+//  GRADE DEVOIR (API CALL)
+// ─────────────────────────────────────────
+async function gradeDevoir(dId){
+  const d = DEVOIRS.find(x=>x.id===dId);
+  if(!d) return;
+  const btn = document.getElementById('btn-corr-'+dId);
+  btn.disabled = true;
+  btn.innerHTML = `<span class="loading-dots"><span></span><span></span><span></span></span> Correction en cours...`;
+ 
+  // Build prompt
+  const ansByEx = d.exercises.map(ex=>{
+    return `=== ${ex.title} (${ex.points} pts) ===\n` +
+      (ex.context?`Contexte: ${ex.context}\n\n`:'')+
+      ex.questions.map(q=>{
+        const rep = (state.answers[dId]||{})[q.id]||'(aucune réponse)';
+        return `Q [${q.points}pt]: ${q.text}\nRéponse de l'élève: ${rep}`;
+      }).join('\n\n');
+  }).join('\n\n');
+ 
+  const prompt = `Tu es un professeur de sciences physiques tunisien (1ère S, lycée). Corrige ce devoir de contrôle.
+ 
+DEVOIR: ${d.title} — ${d.year} (Total: ${d.total} pts)
+Élève: ${state.name}
+ 
+${ansByEx}
+ 
+Réponds UNIQUEMENT avec un JSON valide (sans texte avant ou après) de cette structure exacte:
+{
+  "total": <note numérique sur 20>,
+  "questions": [
+    {
+      "id": "<id question>",
+      "earned": <points obtenus>,
+      "max": <points max>,
+      "status": "correct" | "partial" | "wrong",
+      "correction_fr": "<correction complète en français>",
+      "correction_ar": "<نفس التصحيح بالعربية الفصحى>"
+    }
+  ],
+  "comment_fr": "<commentaire général en français>",
+  "comment_ar": "<تعليق عام بالعربية الفصحى>"
+}`;
+ 
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:3000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await resp.json();
+    let text = data.content.map(i=>i.text||'').join('');
+    // strip markdown fences if any
+    text = text.replace(/```json|```/g,'').trim();
+    const result = JSON.parse(text);
+    state.corrections[dId] = result;
+    state.grades[dId] = result.total;
+    renderSidebar();
+    // Re-render devoir to show results
+    loadDevoir(dId);
+  } catch(e){
+    btn.disabled = false;
+    btn.innerHTML = '🔍 Corriger et noter';
+    const panel = document.getElementById('corr-panel-'+dId);
+    if(panel) panel.innerHTML = `<div style="color:var(--red);padding:1rem;border:1px solid rgba(248,113,113,0.3);border-radius:10px;margin-top:1rem">
+      ⚠️ Erreur lors de la correction. Vérifie ta connexion et réessaie.<br><small>${e.message}</small></div>`;
+  }
+}
+ 
+function renderCorrectionPanel(dId){
+  const corr = state.corrections[dId];
+  if(!corr) return '';
+  const d = DEVOIRS.find(x=>x.id===dId);
+  // Build a map of all questions
+  const allQ = [];
+  d.exercises.forEach(ex=>ex.questions.forEach(q=>allQ.push(q)));
+ 
+  const qHtml = (corr.questions||[]).map(cq=>{
+    const q = allQ.find(x=>x.id===cq.id);
+    const icon = cq.status==='correct'?'✅':cq.status==='partial'?'🔶':'❌';
+    return `<div class="q-correction ${cq.status}">
+      <div class="q-corr-title">
+        ${icon} <span style="color:var(--text2);font-size:0.8rem">${q?q.text.substring(0,60)+'...':cq.id}</span>
+        <span style="margin-left:auto;font-weight:800;color:${cq.status==='correct'?'var(--green)':cq.status==='partial'?'var(--yellow)':'var(--red)'}">${cq.earned}/${cq.max}</span>
+      </div>
+      <div class="q-corr-fr">🇫🇷 ${cq.correction_fr}</div>
+      <div class="q-corr-ar">🇹🇳 ${cq.correction_ar}</div>
+    </div>`;
+  }).join('');
+ 
+  const tot = corr.total;
+  const col = tot>=14?'var(--green)':tot>=10?'var(--yellow)':'var(--red)';
+ 
+  return `<div class="correction-panel show">
+    <div class="correction-header">
+      <span>📊 Correction — </span>
+      <span style="font-size:1.3rem;color:${col}">${tot}/20</span>
+      <span style="margin-left:0.5rem;color:var(--text2);font-size:0.85rem">${state.name}</span>
+    </div>
+    <div class="correction-body">
+      ${qHtml}
+      <div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:10px;">
+        <div style="font-weight:700;margin-bottom:0.5rem;color:var(--cyan)">💬 Commentaire général</div>
+        <div style="font-size:0.88rem;line-height:1.7;margin-bottom:0.5rem">${corr.comment_fr}</div>
+        <div style="font-family:'Cairo',sans-serif;direction:rtl;text-align:right;font-size:0.9rem;line-height:1.9;color:var(--text2)">${corr.comment_ar}</div>
+      </div>
+    </div>
+  </div>`;
+}
+</script>
+</body>
+</html>
+ 
