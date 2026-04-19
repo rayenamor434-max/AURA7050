@@ -1357,76 +1357,790 @@ function saveAnswer(dId, qId, val){
 function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
  
 // ─────────────────────────────────────────
-//  GRADE DEVOIR (API CALL)
+//  BASE DE DONNÉES DE CORRECTION LOCALE
+//  Système 100% offline — Mots-clés (Keywords)
 // ─────────────────────────────────────────
-async function gradeDevoir(dId){
+const CORRECTION_DATA = {
+
+  // ══════════════════════════════════════
+  //  DEVOIR dc1 — Lycée Regueb 2014/2015
+  // ══════════════════════════════════════
+  dc1: {
+    comment_fr: "Bon travail d'ensemble. Maîtrise les formules P=mg et la loi de Hooke. Relis les définitions des forces de contact et à distance.",
+    comment_ar: "عمل جيد بشكل عام. أتقن معادلات P=mg وقانون هوك. أعد قراءة تعريفات قوى التماس والمسافة.",
+    questions: {
+      q1: {
+        keywords: ['réactifs','produits','eau','éthanol','éthène','h2so4'],
+        keywords_ar: ['متفاعلات','نواتج','ماء','إيثانول','إيثين'],
+        correction_fr: "Réactifs : eau (H₂O) + éthène (C₂H₄). Produits : éthanol (C₂H₅OH). L'acide sulfurique H₂SO₄ est un catalyseur (non consommé).",
+        correction_ar: "المتفاعلات: الماء (H₂O) + الإيثين (C₂H₄). النواتج: الإيثانول (C₂H₅OH). حمض الكبريتيك H₂SO₄ محفّز (لا يُستهلك).",
+        points: 1
+      },
+      q2: {
+        keywords: ['h2o','c2h4','c2h5oh','→','eau','éthène','éthanol'],
+        keywords_ar: ['ماء','إيثين','إيثانول','←'],
+        correction_fr: "Schéma : H₂O + C₂H₄ → C₂H₅OH (en présence de H₂SO₄ et ~300°C).",
+        correction_ar: "المخطط: H₂O + C₂H₄ → C₂H₅OH (بوجود H₂SO₄ وحرارة ~300°C).",
+        points: 1
+      },
+      q3a: {
+        keywords: ['exothermique','amorcée','lente','rapide','endothermique'],
+        keywords_ar: ['طاردة للحرارة','مُشعلة','بطيئة','سريعة','ماصة للحرارة'],
+        correction_fr: "Cette réaction est : exothermique (libère de la chaleur), amorcée (nécessite une activation : 300°C), lente (se produit progressivement à l'échelle industrielle).",
+        correction_ar: "هذا التفاعل: طارد للحرارة (يُطلق حرارة)، مُشعَل (يحتاج تنشيطاً: 300°C)، بطيء (يتم تدريجياً على المستوى الصناعي).",
+        points: 1
+      },
+      q3b: {
+        keywords: ['catalyseur','accélère','catalyse','accélérer'],
+        keywords_ar: ['محفّز','يسرّع','حفاز','تحفيز'],
+        correction_fr: "L'acide sulfurique H₂SO₄ joue le rôle de catalyseur : il accélère la réaction sans être consommé.",
+        correction_ar: "حمض الكبريتيك H₂SO₄ يلعب دور المحفّز: يُسرّع التفاعل دون أن يُستهلك.",
+        points: 1
+      },
+      q4: {
+        keywords: ['4fe','3o2','2fe2o3','4','3','2'],
+        keywords_ar: ['4','3','2'],
+        correction_fr: "4 Fe + 3 O₂ → 2 Fe₂O₃",
+        correction_ar: "4 Fe + 3 O₂ → 2 Fe₂O₃",
+        points: 1
+      },
+      q5: {
+        keywords: ['c6h12','6o2','6co2','6h2o','6','6'],
+        keywords_ar: ['6','6','6'],
+        correction_fr: "C₆H₁₂ + 6 O₂ → 6 CO₂ + 6 H₂O",
+        correction_ar: "C₆H₁₂ + 6 O₂ → 6 CO₂ + 6 H₂O",
+        points: 1
+      },
+      q6: {
+        keywords: ['3fe','4h2o','fe3o4','4h2','3','4'],
+        keywords_ar: ['3','4'],
+        correction_fr: "3 Fe + 4 H₂O → Fe₃O₄ + 4 H₂ (ou l'équation équivalente équilibrée)",
+        correction_ar: "3 Fe + 4 H₂O → Fe₃O₄ + 4 H₂",
+        points: 1
+      },
+      q7: {
+        keywords: ['alcl3','3naoh','al(oh)3','3nacl','3'],
+        keywords_ar: ['3'],
+        correction_fr: "AlCl₃ + 3 NaOH → Al(OH)₃ + 3 NaCl",
+        correction_ar: "AlCl₃ + 3 NaOH → Al(OH)₃ + 3 NaCl",
+        points: 1
+      },
+      q8: {
+        keywords: ['poids','tension','deux forces','p','t'],
+        keywords_ar: ['وزن','توتر','قوتان','ثقل'],
+        correction_fr: "Le solide S est soumis à deux forces : son poids P⃗ (vers le bas, appliqué au centre de gravité) et la tension du ressort T⃗ (vers le haut, appliquée au point d'accrochage).",
+        correction_ar: "الجسم S يخضع لقوتين: وزنه P⃗ (نحو الأسفل، مُطبَّق في مركز الثقل) وتوتر النابض T⃗ (نحو الأعلى، مُطبَّق في نقطة التعليق).",
+        points: 1
+      },
+      q9: {
+        keywords: ['p+t=0','p⃗+t⃗','équilibre','nulle','égales'],
+        keywords_ar: ['توازن','تساوٍ','صفر','يساوي'],
+        correction_fr: "Condition d'équilibre : P⃗ + T⃗ = 0⃗ ⟹ ‖T⃗‖ = ‖P⃗‖",
+        correction_ar: "شرط التوازن: P⃗ + T⃗ = 0⃗ ⟹ ‖T⃗‖ = ‖P⃗‖",
+        points: 1
+      },
+      q10: {
+        keywords: ['6','p=mg','p=m','600','0.6','6n'],
+        keywords_ar: ['6','P=mg','600'],
+        correction_fr: "‖P⃗‖ = m × g = 0,6 kg × 10 N·kg⁻¹ = 6 N",
+        correction_ar: "‖P⃗‖ = m × g = 0,6 kg × 10 N·kg⁻¹ = 6 N",
+        points: 1
+      },
+      q11: {
+        keywords: ['6','t=p','tension','6n'],
+        keywords_ar: ['6','توتر'],
+        correction_fr: "À l'équilibre : ‖T⃗‖ = ‖P⃗‖ = 6 N",
+        correction_ar: "عند التوازن: ‖T⃗‖ = ‖P⃗‖ = 6 N",
+        points: 1
+      },
+      q12: {
+        keywords: ['13','0.13','l=l0+x','hooke','allongement','3cm'],
+        keywords_ar: ['13','إطالة','قانون هوك'],
+        correction_fr: "x = T/k = 6/200 = 0,03 m = 3 cm. ℓ = ℓ₀ + x = 10 + 3 = 13 cm",
+        correction_ar: "x = T/k = 6/200 = 0,03 m = 3 cm. ℓ = ℓ₀ + x = 10 + 3 = 13 cm",
+        points: 1
+      },
+      q13: {
+        keywords: ['verticale','newton','bas','haut','centre','application'],
+        keywords_ar: ['عمودي','نيوتن','أسفل','أعلى','مركز','تطبيق'],
+        correction_fr: "Poids P⃗ : direction verticale, sens vers le bas, valeur 6 N, point d'application = centre de gravité de S. Tension T⃗ : direction verticale, sens vers le haut, valeur 6 N, point d'application = point d'accrochage.",
+        correction_ar: "الوزن P⃗: اتجاه عمودي، جهة نحو الأسفل، قيمة 6 N، نقطة تطبيق = مركز ثقل S. التوتر T⃗: اتجاه عمودي، جهة نحو الأعلى، قيمة 6 N، نقطة تطبيق = نقطة التعليق.",
+        points: 1
+      },
+      q14: {
+        keywords: ['vrai','distance','à distance','magnétique'],
+        keywords_ar: ['صحيح','مسافة','قوة مسافة','مغناطيسي'],
+        correction_fr: "VRAI — L'aimant exerce bien une force sur la bille. C'est une force à distance (force magnétique, pas de contact physique).",
+        correction_ar: "صحيح — يمارس المغناطيس قوة على الكرة. هي قوة مسافة (قوة مغناطيسية، لا تماس جسدي).",
+        points: 0.5
+      },
+      q15: {
+        keywords: ['faux','contact','exerce','tension'],
+        keywords_ar: ['خطأ','تماس','يمارس','توتر'],
+        correction_fr: "FAUX — Le fil exerce bien une force sur la bille. C'est une force de contact.",
+        correction_ar: "خطأ — الخيط يمارس قوة على الكرة. هي قوة تماس.",
+        points: 0.5
+      },
+      q16: {
+        keywords: ['vrai','distance','poids','gravitationnel','gravité'],
+        keywords_ar: ['صحيح','مسافة','وزن','جاذبية'],
+        correction_fr: "VRAI — La Terre exerce le poids sur la bille. C'est une force à distance (attraction gravitationnelle).",
+        correction_ar: "صحيح — الأرض تمارس وزن الكرة. هي قوة مسافة (جذب الأرض).",
+        points: 0.5
+      },
+      q17: {
+        keywords: ['horizontale','vertical','newton','direction','sens','valeur'],
+        keywords_ar: ['أفقي','عمودي','نيوتن','اتجاه','جهة','قيمة'],
+        correction_fr: "F⃗₁ : horizontal, droite, 6 N (3cm×2N). F⃗₂ : 45°, bas-droite, 8 N (4cm×2N). F⃗₃ : vertical, haut, 5 N (2,5cm×2N). F⃗₄ : horizontal, gauche, 6 N (3cm×2N).",
+        correction_ar: "F⃗₁: أفقي، يميناً، 6N. F⃗₂: 45°، أسفل-يمين، 8N. F⃗₃: عمودي، أعلى، 5N. F⃗₄: أفقي، يساراً، 6N.",
+        points: 3
+      },
+      q18: {
+        keywords: ['meme valeur','opposé','colinéaire','direction','f1','f4'],
+        keywords_ar: ['نفس القيمة','متعاكستان','متراص','f1','f4'],
+        correction_fr: "F⃗₁ et F⃗₄ : même direction (horizontale) et même valeur (6 N) mais sens opposés. F⃗₁ et F⃗₂ : même point d'application et même sens général (vers la droite).",
+        correction_ar: "F⃗₁ وF⃗₄: نفس الاتجاه (أفقي) ونفس القيمة (6N) لكن جهتان متعاكستان. F⃗₁ وF⃗₂: نفس نقطة التطبيق.",
+        points: 1
+      }
+    }
+  },
+
+  // ══════════════════════════════════════
+  //  DEVOIR dc2 — Lycée Sidi Bouzid 2013/2014
+  // ══════════════════════════════════════
+  dc2: {
+    comment_fr: "Très bon travail ! Les calculs de vitesse et de poids sont bien maîtrisés. Attention aux définitions précises du poids.",
+    comment_ar: "عمل ممتاز! حسابات السرعة والوزن متقنة جيداً. انتبه للتعريفات الدقيقة للوزن.",
+    questions: {
+      d2q1: {
+        keywords: ['réaction chimique','nouveaux corps','transformation','formation'],
+        keywords_ar: ['تفاعل كيميائي','أجسام جديدة','تحول'],
+        correction_fr: "Il se produit une réaction chimique car de nouveaux corps apparaissent (H₂O et CO₂) et d'autres disparaissent (CH₄ et O₂). Les propriétés chimiques sont différentes.",
+        correction_ar: "يحدث تفاعل كيميائي لأن أجساماً جديدة تظهر (H₂O وCO₂) وأخرى تختفي (CH₄ وO₂). الخصائص الكيميائية مختلفة.",
+        points: 1
+      },
+      d2q2: {
+        keywords: ['ch4','o2','réactifs','produits','eau','co2'],
+        keywords_ar: ['ch4','o2','متفاعلات','نواتج','ماء','co2'],
+        correction_fr: "Réactifs : méthane (CH₄) + dioxygène (O₂). Produits : eau (H₂O) + dioxyde de carbone (CO₂).",
+        correction_ar: "المتفاعلات: الميثان (CH₄) + الأكسجين (O₂). النواتج: الماء (H₂O) + ثاني أكسيد الكربون (CO₂).",
+        points: 1
+      },
+      d2q3: {
+        keywords: ['ch4','2o2','co2','2h2o','→'],
+        keywords_ar: ['ch4','o2','co2','h2o'],
+        correction_fr: "CH₄ + 2 O₂ → CO₂ + 2 H₂O",
+        correction_ar: "CH₄ + 2 O₂ → CO₂ + 2 H₂O",
+        points: 1
+      },
+      d2q4: {
+        keywords: ['exothermique','rapide','amorcée','spontanée'],
+        keywords_ar: ['طاردة','سريعة','مشعلة','عفوية'],
+        correction_fr: "Cette réaction est : exothermique (explosion = libération d'énergie thermique) et amorcée (initiée par la flamme). Elle est aussi rapide (explosion instantanée).",
+        correction_ar: "هذا التفاعل: طارد للحرارة (انفجار = إطلاق طاقة حرارية) ومُشعَل (بدأ بالشعلة). هو أيضاً سريع (انفجار فوري).",
+        points: 1
+      },
+      d2q5: {
+        keywords: ['2hi','cl2','i2','2hcl','2'],
+        keywords_ar: ['2'],
+        correction_fr: "2 HI + Cl₂ → I₂ + 2 HCl",
+        correction_ar: "2 HI + Cl₂ → I₂ + 2 HCl",
+        points: 1
+      },
+      d2q6: {
+        keywords: ['na2o','h2o','2naoh','2'],
+        keywords_ar: ['2'],
+        correction_fr: "Na₂O + H₂O → 2 NaOH",
+        correction_ar: "Na₂O + H₂O → 2 NaOH",
+        points: 1
+      },
+      d2q7: {
+        keywords: ['ch4','2o2','co2','2h2o','2'],
+        keywords_ar: ['2'],
+        correction_fr: "CH₄ + 2 O₂ → CO₂ + 2 H₂O",
+        correction_ar: "CH₄ + 2 O₂ → CO₂ + 2 H₂O",
+        points: 1
+      },
+      d2q8: {
+        keywords: ['4kno3','2k2o','2n2o','o2','4','2'],
+        keywords_ar: ['4','2'],
+        correction_fr: "4 KNO₃ → 2 K₂O + 2 N₂O₅ + O₂ (ou équivalent équilibré)",
+        correction_ar: "4 KNO₃ → 2 K₂O + 2 N₂O₅ + O₂",
+        points: 1
+      },
+      d2q9: {
+        keywords: ['2000','200','m','s','secondes','mètre'],
+        keywords_ar: ['2000','200','م','ث'],
+        correction_fr: "d = 2 km = 2000 m. Δt = 3 min 20 s = (3×60) + 20 = 200 s.",
+        correction_ar: "d = 2 km = 2000 m. Δt = 3 دقيقة 20 ثانية = 3×60 + 20 = 200 ث.",
+        points: 1
+      },
+      d2q10: {
+        keywords: ['10','36','v=d','vitesse','m/s','km/h'],
+        keywords_ar: ['10','36','سرعة','m/s','km/h'],
+        correction_fr: "v = d/Δt = 2000/200 = 10 m/s. Conversion : 10 × 3,6 = 36 km/h.",
+        correction_ar: "v = d/Δt = 2000/200 = 10 m/s. تحويل: 10 × 3,6 = 36 km/h.",
+        points: 2
+      },
+      d2q11: {
+        keywords: ['force','attraction','terrestre','gravité','pesanteur'],
+        keywords_ar: ['قوة','جذب','أرض','ثقل'],
+        correction_fr: "Le poids d'un corps est la force d'attraction exercée par la Terre (ou tout autre astre) sur ce corps.",
+        correction_ar: "وزن الجسم هو قوة الجذب التي تمارسها الأرض (أو أي نجم آخر) على هذا الجسم.",
+        points: 1
+      },
+      d2q12: {
+        keywords: ['distance','répartie','gravitationnel'],
+        keywords_ar: ['مسافة','موزعة','جذب الأرض'],
+        correction_fr: "Le poids est une force à distance (pas de contact avec la Terre) et répartie (appliquée en chaque point du corps, assimilée à son centre de gravité).",
+        correction_ar: "الوزن قوة مسافة (لا تماس مع الأرض) وموزعة (تُطبَّق في كل نقطة من الجسم، يُمثَّل بمركز الثقل).",
+        points: 1
+      },
+      d2q13: {
+        keywords: ['verticale','bas','4.9','newton','centre'],
+        keywords_ar: ['عمودي','أسفل','4.9','نيوتن','مركز'],
+        correction_fr: "Direction : verticale. Sens : vers le bas. Valeur : ‖P⃗‖ = 4,9 N (indiquée par le dynamomètre). Point d'application : centre de gravité de (S).",
+        correction_ar: "الاتجاه: عمودي. الجهة: نحو الأسفل. القيمة: ‖P⃗‖ = 4,9 N. نقطة التطبيق: مركز ثقل (S).",
+        points: 1
+      },
+      d2q14: {
+        keywords: ['0.5','500','m=p/g','m=','masse'],
+        keywords_ar: ['0.5','500','كتلة','m=p/g'],
+        correction_fr: "m = P/g = 4,9 / 9,8 = 0,5 kg = 500 g",
+        correction_ar: "m = P/g = 4,9 / 9,8 = 0,5 kg = 500 g",
+        points: 2
+      },
+      d2q15: {
+        keywords: ['tension','fil','t⃗'],
+        keywords_ar: ['توتر','خيط','T'],
+        correction_fr: "La force exercée par le fil sur le solide (S) s'appelle la tension du fil, notée T⃗.",
+        correction_ar: "القوة التي يمارسها الخيط على الجسم (S) تُسمى توتر الخيط، يُرمز له بـ T⃗.",
+        points: 1
+      },
+      d2q16: {
+        keywords: ['contact','localisée','fil'],
+        keywords_ar: ['تماس','متمركزة','خيط'],
+        correction_fr: "La tension du fil est une force de contact (le fil touche le solide) et localisée (au point d'attache du fil sur le solide).",
+        correction_ar: "توتر الخيط قوة تماس (الخيط يلمس الجسم) ومتمركزة (في نقطة ربط الخيط بالجسم).",
+        points: 1
+      },
+      d2q17: {
+        keywords: ['p+t=0','4.9','équilibre','t=p'],
+        keywords_ar: ['توازن','4.9','p+t=0'],
+        correction_fr: "Condition d'équilibre : P⃗ + T⃗ = 0⃗ ⟹ ‖T⃗‖ = ‖P⃗‖ = 4,9 N.",
+        correction_ar: "شرط التوازن: P⃗ + T⃗ = 0⃗ ⟹ ‖T⃗‖ = ‖P⃗‖ = 4,9 N.",
+        points: 2
+      }
+    }
+  },
+
+  // ══════════════════════════════════════
+  //  DEVOIR dc3 — Lycée Tebourba 2013/2014
+  // ══════════════════════════════════════
+  dc3: {
+    comment_fr: "Bonne maîtrise des calculs de concentration et des planètes. Travaille sur la précision des définitions chimiques.",
+    comment_ar: "إتقان جيد لحسابات التركيز والكواكب. اعمل على دقة التعريفات الكيميائية.",
+    questions: {
+      d3q1: {
+        keywords: ['réactifs','produits','transformation','nouveaux corps','disparaissent','apparaissent'],
+        keywords_ar: ['متفاعلات','نواتج','تحول','تختفي','تظهر'],
+        correction_fr: "Une réaction chimique est une transformation au cours de laquelle des corps (les réactifs) disparaissent et de nouveaux corps (les produits) apparaissent avec des propriétés différentes.",
+        correction_ar: "التفاعل الكيميائي هو تحول تختفي فيه أجسام (المتفاعلات) وتظهر أجسام جديدة (النواتج) ذات خصائص مختلفة.",
+        points: 0.75
+      },
+      d3q2: {
+        keywords: ['exothermique','amorcée','rapide','violente','chaleur','s\'échauffe'],
+        keywords_ar: ['طاردة','مشعلة','سريعة','حرارة'],
+        correction_fr: "La réaction est exothermique (le récipient s'échauffe → libération de chaleur) et rapide / violente (explosion). Elle est amorcée (initiée par l'enflammage).",
+        correction_ar: "التفاعل طارد للحرارة (الوعاء يسخن ← إطلاق حرارة) وسريع/عنيف (انفجار). هو مُشعَل (بدأ بالإشعال).",
+        points: 0.75
+      },
+      d3q3: {
+        keywords: ['h2','o2','h2o','réactifs','produits','dihydrogène','dioxygène','eau'],
+        keywords_ar: ['h2','o2','h2o','متفاعلات','نواتج'],
+        correction_fr: "Réactifs : dihydrogène (H₂) + dioxygène (O₂). Produit : eau (H₂O).",
+        correction_ar: "المتفاعلات: الهيدروجين (H₂) + الأكسجين (O₂). النواتج: الماء (H₂O).",
+        points: 1
+      },
+      d3q4: {
+        keywords: ['h2','o2','h2o','→'],
+        keywords_ar: ['h2','o2','h2o'],
+        correction_fr: "H₂ + O₂ → H₂O (schéma non équilibré)",
+        correction_ar: "H₂ + O₂ → H₂O (مخطط غير متوازن)",
+        points: 0.75
+      },
+      d3q5: {
+        keywords: ['2h2','o2','2h2o','2'],
+        keywords_ar: ['2'],
+        correction_fr: "2 H₂ + O₂ → 2 H₂O",
+        correction_ar: "2 H₂ + O₂ → 2 H₂O",
+        points: 0.75
+      },
+      d3q6: {
+        keywords: ['solvant','eau','soluté','kno3','nitrate'],
+        keywords_ar: ['مذيب','ماء','مذاب','kno3','نترات'],
+        correction_fr: "Solvant : l'eau (H₂O). Soluté : le nitrate de potassium (KNO₃).",
+        correction_ar: "المذيب: الماء (H₂O). المذاب: نترات البوتاسيوم (KNO₃).",
+        points: 0.5
+      },
+      d3q7: {
+        keywords: ['202','20.2','0.1','100','cm=m/v'],
+        keywords_ar: ['202','20.2','0.1'],
+        correction_fr: "Cₘ = m/V = 20,2 g / 0,1 L = 202 g·L⁻¹",
+        correction_ar: "Cₘ = m/V = 20,2 g / 0,1 L = 202 g·L⁻¹",
+        points: 0.5
+      },
+      d3q8: {
+        keywords: ['2','cn','cm/m','molaire','101','2mol'],
+        keywords_ar: ['2','مولي','101'],
+        correction_fr: "Cₙ = Cₘ / M = 202 / 101 = 2 mol·L⁻¹",
+        correction_ar: "Cₙ = Cₘ / M = 202 / 101 = 2 mol·L⁻¹",
+        points: 0.5
+      },
+      d3q9: {
+        keywords: ['v0','20','ml','c1v1=c2v2','prélever'],
+        keywords_ar: ['v0','20','ml'],
+        correction_fr: "C₁×V₀ = C₂×V₂ → 202×V₀ = 80×0,05 → V₀ = 4/202 ≈ 0,02 L = 20 mL",
+        correction_ar: "C₁×V₀ = C₂×V₂ → 202×V₀ = 80×0,05 → V₀ ≈ 20 mL",
+        points: 0.5
+      },
+      d3q10: {
+        keywords: ['solubilité','soluté','saturé','maximum','dissoudre'],
+        keywords_ar: ['قابلية الذوبان','مذاب','مشبع','أقصى'],
+        correction_fr: "La solubilité d'un soluté est la masse maximale de ce soluté pouvant se dissoudre dans 1 litre de solvant à une température donnée.",
+        correction_ar: "قابلية ذوبان مذاب هي أقصى كتلة من هذا المذاب يمكن إذابتها في لتر واحد من المذيب عند درجة حرارة معينة.",
+        points: 0.5
+      },
+      d3q11: {
+        keywords: ['saturée','non saturée','700','1100','35'],
+        keywords_ar: ['مشبع','غير مشبع','700','1100'],
+        correction_fr: "Concentration effective : C = m/V = 35/(0,05) = 700 g·L⁻¹. Solubilité à 60°C = 1100 g·L⁻¹. Comme 700 < 1100 → la solution n'est PAS saturée.",
+        correction_ar: "التركيز الفعلي: C = 35/0,05 = 700 g·L⁻¹. قابلية الذوبان عند 60°C = 1100 g·L⁻¹. بما أن 700 < 1100 → المحلول غير مشبع.",
+        points: 0.5
+      },
+      d3q12: {
+        keywords: ['dépôt','cristaux','16.5','précipite','330','refroidit'],
+        keywords_ar: ['ترسب','بلورات','16.5','يترسب','330'],
+        correction_fr: "À 20°C, solubilité = 330 g·L⁻¹ → masse max dissous = 330×0,05 = 16,5 g. Dépôt = 35 − 16,5 = 18,5 g de KNO₃ cristallise.",
+        correction_ar: "عند 20°C، قابلية الذوبان = 330 g·L⁻¹ → أقصى كتلة مذابة = 330×0,05 = 16,5 g. كتلة الترسب = 35 − 16,5 = 18,5 g من KNO₃ تتبلور.",
+        points: 1
+      },
+      d3q13: {
+        keywords: ['dynamomètre','newton','n','lecture'],
+        keywords_ar: ['ديناموميتر','نيوتن','قراءة'],
+        correction_fr: "L'appareil s'appelle un dynamomètre. Il est gradué en Newton (N). La valeur lue sur la figure est celle indiquée par l'aiguille.",
+        correction_ar: "الجهاز يُسمى ديناموميتر. مُدرَّج بالنيوتن (N). القيمة المقروءة هي ما تشير إليه الإبرة.",
+        points: 1
+      },
+      d3q14: {
+        keywords: ['action mécanique','exercée','modifie','déforme','provoque','empêche'],
+        keywords_ar: ['فعل ميكانيكي','يغير','يشوّه','يُحدث','يمنع'],
+        correction_fr: "Une action mécanique est une action exercée par un objet sur un autre, pouvant provoquer, modifier ou empêcher un mouvement (effet dynamique) ou déformer un corps (effet statique).",
+        correction_ar: "الفعل الميكانيكي هو فعل يمارسه جسم على جسم آخر، يمكن أن يُحدث أو يُعدّل أو يمنع حركة (تأثير حركي) أو يُشوّه جسماً (تأثير ساكن).",
+        points: 1
+      },
+      d3q15: {
+        keywords: ['c','50','horizontal','droite','newton'],
+        keywords_ar: ['c','50','أفقي','يمين','نيوتن'],
+        correction_fr: "Point d'application : C. Droite d'action : horizontale. Sens : vers la droite. Valeur : 50 N.",
+        correction_ar: "نقطة التطبيق: C. خط العمل: أفقي. الجهة: نحو اليمين. القيمة: 50 N.",
+        points: 1
+      },
+      d3q16: {
+        keywords: ['5','cm','5cm','longueur','1cm','10n'],
+        keywords_ar: ['5','cm','طول'],
+        correction_fr: "À l'échelle 1 cm → 10 N : longueur = 50/10 = 5 cm",
+        correction_ar: "بمقياس 1 cm → 10 N: الطول = 50/10 = 5 cm",
+        points: 1
+      },
+      d3q17: {
+        keywords: ['p=mg','p=m×g','formule','relation'],
+        keywords_ar: ['p=mg','معادلة','علاقة'],
+        correction_fr: "La formule reliant le poids et la masse est : P = m × g",
+        correction_ar: "العلاقة بين الوزن والكتلة: P = m × g",
+        points: 1
+      },
+      d3q18: {
+        keywords: ['185','p=50','mars','3.7','50×3.7'],
+        keywords_ar: ['185','المريخ','3.7'],
+        correction_fr: "P_Mars = m × g_Mars = 50 × 3,7 = 185 N",
+        correction_ar: "P_المريخ = m × g_المريخ = 50 × 3,7 = 185 N",
+        points: 1.5
+      },
+      d3q19: {
+        keywords: ['50','490','terre','9.8','masse','m=50'],
+        keywords_ar: ['50','490','الأرض','9.8','كتلة'],
+        correction_fr: "Sa masse est identique partout : m = 50 kg. Son poids sur Terre : P = 50 × 9,8 = 490 N.",
+        correction_ar: "كتلته لا تتغير في أي مكان: m = 50 kg. وزنه على الأرض: P = 50 × 9,8 = 490 N.",
+        points: 1.5
+      },
+      d3q20: {
+        keywords: ['jupiter','24.8','520','10.4'],
+        keywords_ar: ['المشتري','24.8','520'],
+        correction_fr: "g = P/m = 520/50 = 10,4 N·kg⁻¹ → c'est Saturne (g = 10,4 N·kg⁻¹).",
+        correction_ar: "g = P/m = 520/50 = 10,4 N·kg⁻¹ → هذه زحل (g = 10,4 N·kg⁻¹).",
+        points: 1.5
+      },
+      d3q21: {
+        keywords: ['mercure','venus','uranus','3.7','8.9','même poids'],
+        keywords_ar: ['عطارد','الزهرة','أورانوس','3.7','نفس الوزن'],
+        correction_fr: "Le poids sur Mars = 185 N → cherche g tel que 50×g = 185 → g = 3,7 N·kg⁻¹. C'est Mercure (même g = 3,7).",
+        correction_ar: "الوزن على المريخ = 185 N → نبحث عن g حيث 50×g = 185 → g = 3,7 N·kg⁻¹. هذا عطارد (نفس g = 3,7).",
+        points: 1.5
+      }
+    }
+  },
+
+  // ══════════════════════════════════════
+  //  DEVOIR dc4 — École Menzel Ennour 2012/2013
+  // ══════════════════════════════════════
+  dc4: {
+    comment_fr: "Excellent travail sur la loi de Hooke ! Maîtrise bien les calculs numériques. Soigne les définitions.",
+    comment_ar: "عمل ممتاز في قانون هوك! أتقن الحسابات العددية. عنايةً بالتعريفات.",
+    questions: {
+      d4q1: {
+        keywords: ['oui','transformation','nouveaux','corps','réaction chimique'],
+        keywords_ar: ['نعم','تحول','أجسام جديدة','تفاعل'],
+        correction_fr: "Oui, c'est une réaction chimique car de nouveaux corps apparaissent (H₂ et AlCl₃) et des corps disparaissent (Al et HCl) avec des propriétés différentes.",
+        correction_ar: "نعم، هذا تفاعل كيميائي لأن أجساماً جديدة تظهر (H₂ وAlCl₃) وأخرى تختفي (Al وHCl).",
+        points: 1.5
+      },
+      d4q2: {
+        keywords: ['exothermique','rapide','spontanée','température','vitesse'],
+        keywords_ar: ['طاردة','سريعة','عفوية','حرارة'],
+        correction_fr: "Réaction exothermique (élévation de température → libération de chaleur), spontanée (se produit dès contact sans activation extérieure), rapide (production rapide de H₂).",
+        correction_ar: "تفاعل طارد للحرارة (ارتفاع درجة الحرارة)، عفوي (يحدث فور الاتصال دون تنشيط خارجي)، سريع (إنتاج سريع لـH₂).",
+        points: 2.5
+      },
+      d4q3: {
+        keywords: ['al','hcl','réactifs','produits','h2','alcl3'],
+        keywords_ar: ['al','hcl','متفاعلات','نواتج','h2','alcl3'],
+        correction_fr: "Réactifs : aluminium (Al) + acide chlorhydrique (HCl). Produits : dihydrogène (H₂) + chlorure d'aluminium (AlCl₃).",
+        correction_ar: "المتفاعلات: الألومنيوم (Al) + حمض كلور الهيدروجين (HCl). النواتج: الهيدروجين (H₂) + كلوريد الألومنيوم (AlCl₃).",
+        points: 1
+      },
+      d4q4: {
+        keywords: ['al','hcl','h2','alcl3','→'],
+        keywords_ar: ['al','hcl','h2','alcl3'],
+        correction_fr: "Al + HCl → AlCl₃ + H₂ (schéma non équilibré)",
+        correction_ar: "Al + HCl → AlCl₃ + H₂ (مخطط)",
+        points: 0.5
+      },
+      d4q5: {
+        keywords: ['2al','6hcl','2alcl3','3h2','2','6','3'],
+        keywords_ar: ['2','6','3'],
+        correction_fr: "2 Al + 6 HCl → 2 AlCl₃ + 3 H₂",
+        correction_ar: "2 Al + 6 HCl → 2 AlCl₃ + 3 H₂",
+        points: 1
+      },
+      d4q6: {
+        keywords: ['c2h5','cl2','2c','5hcl','2','5'],
+        keywords_ar: ['2','5'],
+        correction_fr: "C₂H₅ + Cl₂ → 2 C + 5 HCl (attention à l'équilibrage)",
+        correction_ar: "C₂H₅ + Cl₂ → 2 C + 5 HCl",
+        points: 0.5
+      },
+      d4q7: {
+        keywords: ['n2','3h2','2nh3','3','2'],
+        keywords_ar: ['3','2'],
+        correction_fr: "N₂ + 3 H₂ → 2 NH₃",
+        correction_ar: "N₂ + 3 H₂ → 2 NH₃",
+        points: 0.5
+      },
+      d4q8: {
+        keywords: ['4na','o2','2na2o','4','2'],
+        keywords_ar: ['4','2'],
+        correction_fr: "4 Na + O₂ → 2 Na₂O",
+        correction_ar: "4 Na + O₂ → 2 Na₂O",
+        points: 0.5
+      },
+      d4q9: {
+        keywords: ['force','attraction','terrestre','gravité','pesanteur'],
+        keywords_ar: ['قوة','جذب','أرض','ثقل'],
+        correction_fr: "Le poids d'un solide est la force d'attraction exercée par la Terre sur ce solide.",
+        correction_ar: "وزن الجسم هو قوة الجذب التي تمارسها الأرض على الجسم.",
+        points: 1
+      },
+      d4q10: {
+        keywords: ['verticale','bas','2.45','centre','application'],
+        keywords_ar: ['عمودي','أسفل','2.45','مركز','تطبيق'],
+        correction_fr: "Direction : verticale. Sens : vers le bas. Valeur : 2,45 N. Point d'application : centre de gravité de S.",
+        correction_ar: "الاتجاه: عمودي. الجهة: نحو الأسفل. القيمة: 2,45 N. نقطة التطبيق: مركز ثقل S.",
+        points: 1
+      },
+      d4q11: {
+        keywords: ['9.8','9,8','g=p/m','2.45','0.25'],
+        keywords_ar: ['9.8','g=p/m'],
+        correction_fr: "g = P/m = 2,45 / 0,25 = 9,8 N·kg⁻¹",
+        correction_ar: "g = P/m = 2,45 / 0,25 = 9,8 N·kg⁻¹",
+        points: 1
+      },
+      d4q12: {
+        keywords: ['2.04','m=p/g','20','9.8'],
+        keywords_ar: ['2.04','كتلة'],
+        correction_fr: "m' = P'/g = 20 / 9,8 ≈ 2,04 kg",
+        correction_ar: "m' = P'/g = 20 / 9,8 ≈ 2,04 kg",
+        points: 1
+      },
+      d4q13: {
+        keywords: ['poids','tension','fil','deux forces'],
+        keywords_ar: ['وزن','توتر','خيط','قوتان'],
+        correction_fr: "Le solide S est soumis à deux forces : son poids P⃗ (vers le bas) et la tension du fil T⃗ (vers le haut).",
+        correction_ar: "الجسم S يخضع لقوتين: وزنه P⃗ (نحو الأسفل) وتوتر الخيط T⃗ (نحو الأعلى).",
+        points: 1
+      },
+      d4q14: {
+        keywords: ['p+t=0','équilibre','vecteur','nul'],
+        keywords_ar: ['توازن','p+t=0','متجه'],
+        correction_fr: "Condition d'équilibre : P⃗ + T⃗ = 0⃗",
+        correction_ar: "شرط التوازن: P⃗ + T⃗ = 0⃗",
+        points: 1
+      },
+      d4q15: {
+        keywords: ['5','p=mg','0.5','500','p=5'],
+        keywords_ar: ['5','P=mg'],
+        correction_fr: "‖P⃗‖ = m × g = 0,5 × 10 = 5 N",
+        correction_ar: "‖P⃗‖ = m × g = 0,5 × 10 = 5 N",
+        points: 0.5
+      },
+      d4q16: {
+        keywords: ['5','t=p','tension','5n'],
+        keywords_ar: ['5','توتر'],
+        correction_fr: "À l'équilibre : ‖T⃗‖ = ‖P⃗‖ = 5 N",
+        correction_ar: "عند التوازن: ‖T⃗‖ = ‖P⃗‖ = 5 N",
+        points: 1
+      },
+      d4q17: {
+        keywords: ['5','p=5','500g','même'],
+        keywords_ar: ['5','نفس'],
+        correction_fr: "Le poids ne change pas : ‖P⃗‖ = 5 N (même masse 500 g).",
+        correction_ar: "الوزن لا يتغير: ‖P⃗‖ = 5 N (نفس الكتلة 500 g).",
+        points: 0.5
+      },
+      d4q18: {
+        keywords: ['5','t=p','tension','ressort'],
+        keywords_ar: ['5','توتر','نابض'],
+        correction_fr: "À l'équilibre : ‖T⃗‖ = ‖P⃗‖ = 5 N",
+        correction_ar: "عند التوازن: ‖T⃗‖ = ‖P⃗‖ = 5 N",
+        points: 1
+      },
+      d4q19: {
+        keywords: ['0.25','25','hooke','t=k','delta','allongement'],
+        keywords_ar: ['0.25','25','هوك','إطالة'],
+        correction_fr: "Loi de Hooke : T = k × Δℓ → Δℓ = T/k = 5/20 = 0,25 m = 25 cm",
+        correction_ar: "قانون هوك: T = k × Δℓ → Δℓ = T/k = 5/20 = 0,25 m = 25 cm",
+        points: 1
+      },
+      d4q20: {
+        keywords: ['47','0.47','l=l0+delta','22+25'],
+        keywords_ar: ['47','طول'],
+        correction_fr: "ℓ = ℓ₀ + Δℓ = 22 + 25 = 47 cm",
+        correction_ar: "ℓ = ℓ₀ + Δℓ = 22 + 25 = 47 cm",
+        points: 1
+      }
+    }
+  },
+
+  // ══════════════════════════════════════
+  //  DEVOIR dc5 — Lycée Ibn Khaldoun 2009/2010
+  // ══════════════════════════════════════
+  dc5: {
+    comment_fr: "Bonne maîtrise des concepts de poids et de la loi de Hooke. Attention à la correction des propositions inverses.",
+    comment_ar: "إتقان جيد لمفاهيم الوزن وقانون هوك. انتبه لتصحيح العبارات المعكوسة.",
+    questions: {
+      d5q1: {
+        keywords: ['réactifs','produits','inversés','disparaissent','correction'],
+        keywords_ar: ['متفاعلات','نواتج','معكوسة','تختفي'],
+        correction_fr: "Correction : Une réaction chimique est une transformation au cours de laquelle des corps disparaissent : les RÉACTIFS et de nouveaux corps apparaissent : les PRODUITS. (les mots étaient inversés)",
+        correction_ar: "التصحيح: التفاعل الكيميائي تحولٌ تختفي فيه أجسام: المتفاعلات وتظهر أجسام جديدة: النواتج. (الكلمتان كانتا معكوستين)",
+        points: 2
+      },
+      d5q2: {
+        keywords: ['spontanée','sans action','sans activation','corrigé'],
+        keywords_ar: ['عفوية','دون تنشيط'],
+        correction_fr: "Correction : Une réaction chimique est dite SPONTANÉE si elle se produit sans action extérieure. (le terme «amorcée» est incorrect ici, car amorcée signifie le contraire).",
+        correction_ar: "التصحيح: التفاعل الكيميائي يُقال إنه عفوي إذا حدث دون تدخل خارجي. (كلمة 'مُشعَل' خاطئة لأنها تعني العكس).",
+        points: 1
+      },
+      d5q3: {
+        keywords: ['lente','lent','semaines','corrigé'],
+        keywords_ar: ['بطيء','أسابيع'],
+        correction_fr: "Correction : La formation de rouille est une réaction LENTE (elle se forme sur plusieurs semaines, non pas rapide).",
+        correction_ar: "التصحيح: تكوّن الصدأ تفاعل بطيء (يتشكل على مدى أسابيع، وليس سريعاً).",
+        points: 1
+      },
+      d5q4: {
+        keywords: ['al','naoh','aluminate','h2','→'],
+        keywords_ar: ['al','naoh','ألومينات','h2'],
+        correction_fr: "Al + NaOH + H₂O → NaAlO₂ + H₂ (aluminate de sodium + dihydrogène)",
+        correction_ar: "Al + NaOH + H₂O → NaAlO₂ + H₂",
+        points: 1
+      },
+      d5q5: {
+        keywords: ['spontanée','exothermique','rapide'],
+        keywords_ar: ['عفوية','طاردة','سريعة'],
+        correction_fr: "Les propositions vraies sont : spontanée (se produit dès le contact), exothermique (T passe de 25°C à 56°C → libération de chaleur), rapide (réaction quasi-immédiate avec détonation).",
+        correction_ar: "العبارات الصحيحة: عفوية (تحدث فور الاتصال)، طاردة للحرارة (T ارتفعت من 25°C إلى 56°C)، سريعة (تفاعل شبه فوري مع دوي).",
+        points: 1.5
+      },
+      d5q6: {
+        keywords: ['température','chaleur','libère','t finale','56','exothermique'],
+        keywords_ar: ['حرارة','ترتفع','56','طاردة'],
+        correction_fr: "Cette réaction est exothermique car elle libère de la chaleur dans le milieu : la température du milieu augmente de 25°C à 56°C, ce qui indique un transfert d'énergie thermique vers l'extérieur.",
+        correction_ar: "هذا التفاعل طارد للحرارة لأنه يُطلق حرارة في الوسط: ترتفع درجة الحرارة من 25°C إلى 56°C، مما يدل على نقل طاقة حرارية نحو الخارج.",
+        points: 1.5
+      },
+      d5q7: {
+        keywords: ['2','3','pa','pb','200','300','0.2','0.3'],
+        keywords_ar: ['2','3','pa','pb'],
+        correction_fr: "‖P⃗_A‖ = m_A × g = 0,2 × 10 = 2 N. ‖P⃗_B‖ = m_B × g = 0,3 × 10 = 3 N.",
+        correction_ar: "‖P⃗_A‖ = m_A × g = 0,2 × 10 = 2 N. ‖P⃗_B‖ = m_B × g = 0,3 × 10 = 3 N.",
+        points: 2
+      },
+      d5q8: {
+        keywords: ['verticale','bas','newton','centre','application','direction','sens','valeur'],
+        keywords_ar: ['عمودي','أسفل','نيوتن','مركز','اتجاه','جهة','قيمة'],
+        correction_fr: "Caractéristiques du poids : direction verticale, sens vers le bas, valeur = m×g (en N), point d'application = centre de gravité du corps.",
+        correction_ar: "خصائص الوزن: اتجاه عمودي، جهة نحو الأسفل، قيمة = m×g (بالنيوتن)، نقطة تطبيق = مركز ثقل الجسم.",
+        points: 1
+      },
+      d5q10: {
+        keywords: ['p+t=0','équilibre','tension','poids'],
+        keywords_ar: ['توازن','p+t=0','توتر','وزن'],
+        correction_fr: "Condition d'équilibre du corps (C) : P⃗ + T⃗ = 0⃗ (le poids et la tension du ressort sont égaux et opposés).",
+        correction_ar: "شرط توازن الجسم (C): P⃗ + T⃗ = 0⃗ (الوزن وتوتر النابض متساويان ومتعاكسان).",
+        points: 1
+      },
+      d5q11: {
+        keywords: ['1','t=k','hooke','0.05','5cm','20'],
+        keywords_ar: ['1','هوك','0.05','5'],
+        correction_fr: "Loi de Hooke : ‖T⃗‖ = k × Δℓ = 20 × 0,05 = 1 N",
+        correction_ar: "قانون هوك: ‖T⃗‖ = k × Δℓ = 20 × 0,05 = 1 N",
+        points: 2
+      },
+      d5q12: {
+        keywords: ['100','0.1','m=t/g','m=p/g','1','10'],
+        keywords_ar: ['100','0.1','كتلة'],
+        correction_fr: "À l'équilibre : ‖P⃗‖ = ‖T⃗‖ = 1 N. m = P/g = 1/10 = 0,1 kg = 100 g.",
+        correction_ar: "عند التوازن: ‖P⃗‖ = ‖T⃗‖ = 1 N. m = P/g = 1/10 = 0,1 kg = 100 g.",
+        points: 1
+      },
+      d5q13: {
+        keywords: ['7.5','0.075','7','delta','150','allongement'],
+        keywords_ar: ['7.5','0.075','إطالة'],
+        correction_fr: "P' = m'×g = 0,15×10 = 1,5 N. T' = P' = 1,5 N. Δℓ' = T'/k = 1,5/20 = 0,075 m = 7,5 cm.",
+        correction_ar: "P' = m'×g = 0,15×10 = 1,5 N. T' = P' = 1,5 N. Δℓ' = T'/k = 1,5/20 = 0,075 m = 7,5 cm.",
+        points: 1.5
+      }
+    }
+  }
+};
+
+// ─────────────────────────────────────────
+//  GRADE DEVOIR — CORRECTION LOCALE (OFFLINE)
+//  Système par mots-clés — 100% autonome
+// ─────────────────────────────────────────
+function gradeDevoir(dId){
   const d = DEVOIRS.find(x=>x.id===dId);
   if(!d) return;
   const btn = document.getElementById('btn-corr-'+dId);
   btn.disabled = true;
-  btn.innerHTML = `<span class="loading-dots"><span></span><span></span><span></span></span> Correction en cours...`;
- 
-  // Build prompt
-  const ansByEx = d.exercises.map(ex=>{
-    return `=== ${ex.title} (${ex.points} pts) ===\n` +
-      (ex.context?`Contexte: ${ex.context}\n\n`:'')+
-      ex.questions.map(q=>{
-        const rep = (state.answers[dId]||{})[q.id]||'(aucune réponse)';
-        return `Q [${q.points}pt]: ${q.text}\nRéponse de l'élève: ${rep}`;
-      }).join('\n\n');
-  }).join('\n\n');
- 
-  const prompt = `Tu es un professeur de sciences physiques tunisien (1ère S, lycée). Corrige ce devoir de contrôle.
- 
-DEVOIR: ${d.title} — ${d.year} (Total: ${d.total} pts)
-Élève: ${state.name}
- 
-${ansByEx}
- 
-Réponds UNIQUEMENT avec un JSON valide (sans texte avant ou après) de cette structure exacte:
-{
-  "total": <note numérique sur 20>,
-  "questions": [
-    {
-      "id": "<id question>",
-      "earned": <points obtenus>,
-      "max": <points max>,
-      "status": "correct" | "partial" | "wrong",
-      "correction_fr": "<correction complète en français>",
-      "correction_ar": "<نفس التصحيح بالعربية الفصحى>"
+  btn.innerHTML = `⏳ Correction en cours...`;
+
+  // Simulate slight delay for UX feedback
+  setTimeout(()=>{
+    const corrData = CORRECTION_DATA[dId];
+    if(!corrData){
+      btn.disabled = false;
+      btn.innerHTML = '🔍 Corriger et noter';
+      const panel = document.getElementById('corr-panel-'+dId);
+      if(panel) panel.innerHTML = `<div style="color:var(--red);padding:1rem;border:1px solid rgba(248,113,113,0.3);border-radius:10px;margin-top:1rem">
+        ⚠️ Données de correction non disponibles pour ce devoir.</div>`;
+      return;
     }
-  ],
-  "comment_fr": "<commentaire général en français>",
-  "comment_ar": "<تعليق عام بالعربية الفصحى>"
-}`;
- 
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:3000,
-        messages:[{role:'user',content:prompt}]
-      })
+
+    // Build all questions flat list
+    const allQ = [];
+    d.exercises.forEach(ex=>ex.questions.forEach(q=>allQ.push(q)));
+
+    const resultQuestions = [];
+    let totalEarned = 0;
+    let totalMax = 0;
+
+    allQ.forEach(q=>{
+      const studentAnswer = ((state.answers[dId]||{})[q.id]||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const qData = corrData.questions[q.id];
+
+      if(!qData){
+        // No correction data for this question → mark as partial
+        resultQuestions.push({
+          id: q.id,
+          earned: q.points * 0.5,
+          max: q.points,
+          status: 'partial',
+          correction_fr: "Correction non disponible pour cette question.",
+          correction_ar: "التصحيح غير متاح لهذا السؤال."
+        });
+        totalEarned += q.points * 0.5;
+        totalMax += q.points;
+        return;
+      }
+
+      // Check keywords (French + Arabic)
+      const allKeywords = [...(qData.keywords||[]), ...(qData.keywords_ar||[])];
+      const answerNorm = studentAnswer.replace(/[.,;:!?()]/g,' ').replace(/\s+/g,' ');
+
+      let matchCount = 0;
+      const minKeywords = Math.max(1, Math.ceil(allKeywords.length * 0.3));
+
+      allKeywords.forEach(kw=>{
+        const kwNorm = kw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[.,;:!?()]/g,' ');
+        if(answerNorm.includes(kwNorm)) matchCount++;
+      });
+
+      let status, earned;
+      if(studentAnswer.trim().length === 0){
+        status = 'wrong';
+        earned = 0;
+      } else if(matchCount === 0){
+        status = 'wrong';
+        earned = 0;
+      } else if(matchCount >= minKeywords * 1.5 || matchCount >= Math.ceil(allKeywords.length * 0.6)){
+        status = 'correct';
+        earned = qData.points;
+      } else {
+        status = 'partial';
+        earned = Math.round(qData.points * 0.5 * 10) / 10;
+      }
+
+      totalEarned += earned;
+      totalMax += qData.points;
+
+      resultQuestions.push({
+        id: q.id,
+        earned,
+        max: qData.points,
+        status,
+        correction_fr: qData.correction_fr,
+        correction_ar: qData.correction_ar
+      });
     });
-    const data = await resp.json();
-    let text = data.content.map(i=>i.text||'').join('');
-    // strip markdown fences if any
-    text = text.replace(/```json|```/g,'').trim();
-    const result = JSON.parse(text);
+
+    // Scale to 20
+    const total = Math.round((totalEarned / totalMax) * 20 * 10) / 10;
+
+    const result = {
+      total,
+      questions: resultQuestions,
+      comment_fr: corrData.comment_fr,
+      comment_ar: corrData.comment_ar
+    };
+
     state.corrections[dId] = result;
     state.grades[dId] = result.total;
     renderSidebar();
-    // Re-render devoir to show results
     loadDevoir(dId);
-  } catch(e){
-    btn.disabled = false;
-    btn.innerHTML = '🔍 Corriger et noter';
-    const panel = document.getElementById('corr-panel-'+dId);
-    if(panel) panel.innerHTML = `<div style="color:var(--red);padding:1rem;border:1px solid rgba(248,113,113,0.3);border-radius:10px;margin-top:1rem">
-      ⚠️ Erreur lors de la correction. Vérifie ta connexion et réessaie.<br><small>${e.message}</small></div>`;
-  }
+  }, 600);
 }
  
 function renderCorrectionPanel(dId){
